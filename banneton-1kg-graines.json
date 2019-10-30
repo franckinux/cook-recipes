@@ -1,0 +1,8 @@
+{
+    "ingredients": {
+        "pate-base-campagne": 1,
+	"melange-graines": 0.2
+    },
+    "taux-perte": 1.03,
+    "poids-paton": 1
+}

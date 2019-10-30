@@ -1,0 +1,42 @@
+{
+    "eau":
+         {
+	     "prix": 0.0001,
+	     "fournisseur": "SAUR"
+	 },
+    "sel":
+         {
+	     "prix": 2.03,
+	     "fournisseur": "Leclerc"
+	 },
+    "farine-t80":
+        {
+	     "prix": 1.03,
+	     "fournisseur": "GAEC La Belle Botte"
+	},
+    "farine-t170":
+        {
+	     "prix": 2.07,
+	     "fournisseur": "GAEC La Belle Botte"
+	},
+    "tournesol":
+        {
+	     "prix": 4,
+	     "fournisseur": "Leclerc"
+	},
+    "lin-brun":
+        {
+	     "prix": 2,
+	     "fournisseur": "Leclerc"
+	},
+    "lin-dore":
+        {
+	     "prix": 4,
+	     "fournisseur": "Leclerc"
+	},
+    "sesame":
+        {
+	     "prix": 3,
+	     "fournisseur": "Leclerc"
+	}
+}
