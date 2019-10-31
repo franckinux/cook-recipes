@@ -33,26 +33,32 @@ class Touille:
             sys.exit(2)
 
     def detail(self, produit, quantite):
-        if produit not in self.matieres:
+        if produit in self.matieres:
+            return self.matieres[produit]["prix"] * quantite
+        else:
             recette = self.load_json(produit)
             facteur = sum(recette["ingredients"].values())
             quantite *= recette.get("taux-perte", 1)
-            quantite += recette.get("securite", 0)
+            quantite *= recette.get("poids-paton", 1)
             if produit not in self.ingredients:
-                self.ingredients[produit] = {}
-                self.ingredients[produit]["recette"] = {}
+                self.ingredients[produit] = {"recette": {}}
+            prix = 0
             for ingredient, quantite_ingredient in recette["ingredients"].items():
                 quantite_ingredient = (quantite * quantite_ingredient) / facteur
-                if ingredient in self.ingredients[produit]:
+                quantite_ingredient += recette.pop("securite", 0)
+                if ingredient in self.ingredients[produit]["recette"]:
                     self.ingredients[produit]["recette"][ingredient] += quantite_ingredient
                 else:
                     self.ingredients[produit]["recette"][ingredient] = quantite_ingredient
-                self.detail(ingredient, quantite_ingredient)
+                prix += self.detail(ingredient, quantite_ingredient)
+            self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
+            self.ingredients[produit]["prix"] = prix
+            return prix
 
     def touille(self):
         for commande, quantite_commande in self.commandes.items():
             self.detail(commande, quantite_commande)
-        FormatPrinter({float: "%.2f"}).pprint(self.ingredients)
+        FormatPrinter({float: "%.4f"}).pprint(self.ingredients)
 
 
 if __name__ == "__main__":
