@@ -14,9 +14,8 @@ class FormatPrinter(pprint.PrettyPrinter):
         return pprint.PrettyPrinter.format(self, obj, ctx, maxlvl, lvl)
 
 
-class Touille:
-    def __init__(self, matieres, commandes):
-        self.ingredients = {}
+class CacheJson:
+    def __init__(self):
         self.cache = {}
 
     def load_json(self, basename):
@@ -32,12 +31,19 @@ class Touille:
                 print(f"erreur de syntaxe dans le fichier {basename}.json (\"{e}\")")
                 sys.exit(2)
 
+        return self.cache[basename]
+
+
+class Touille:
+    def __init__(self):
+        self.ingredients = {}
+        self.cache = CacheJson()
+
     def detail(self, produit, quantite):
-        if produit in self.cache['matieres']:
-            return self.cache["matieres"][produit]["prix"] * quantite
+        if produit in self.matieres:
+            return self.matieres[produit]["prix"] * quantite
         else:
-            self.load_json(produit)
-            recette = self.cache[produit]
+            recette = self.cache.load_json(produit)
             facteur = sum(recette["ingredients"].values())
             quantite *= recette.get("taux-perte", 1)
             quantite *= recette.get("poids-paton", 1)
@@ -56,15 +62,15 @@ class Touille:
             self.ingredients[produit]["prix"] = prix
             return prix
 
-    def touille(self):
-        self.load_json("matieres")
-        self.load_json("commandes")
+    def touille(self, matieres, commandes):
+        self.commandes = self.cache.load_json(commandes)
+        self.matieres = self.cache.load_json(matieres)
 
-        for commande, quantite_commande in self.cache['commandes'].items():
+        for commande, quantite_commande in self.commandes.items():
             self.detail(commande, quantite_commande)
         FormatPrinter({float: "%.4f"}).pprint(self.ingredients)
 
 
 if __name__ == "__main__":
-    touille = Touille("matieres", "commandes")
-    touille.touille()
+    touille = Touille()
+    touille.touille("matieres-premieres", "commandes")
