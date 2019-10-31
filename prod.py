@@ -17,26 +17,27 @@ class FormatPrinter(pprint.PrettyPrinter):
 class Touille:
     def __init__(self, matieres, commandes):
         self.ingredients = {}
-        self.matieres = self.load_json("matieres")
-        self.commandes = self.load_json("commandes")
+        self.cache = {}
 
     def load_json(self, basename):
-        try:
-            json_data = open(basename + ".json", "r")
-        except Exception:
-            print(f"{basename}.json non trouvé")
-            sys.exit(1)
-        try:
-            return json.load(json_data)
-        except json.decoder.JSONDecodeError as e:
-            print(f"erreur de syntaxe dans le fichier {basename}.json (\"{e}\")")
-            sys.exit(2)
+        if basename not in self.cache:
+            try:
+                json_data = open(basename + ".json", "r")
+            except Exception:
+                print(f"{basename}.json non trouvé")
+                sys.exit(1)
+            try:
+                self.cache[basename] = json.load(json_data)
+            except json.decoder.JSONDecodeError as e:
+                print(f"erreur de syntaxe dans le fichier {basename}.json (\"{e}\")")
+                sys.exit(2)
 
     def detail(self, produit, quantite):
-        if produit in self.matieres:
-            return self.matieres[produit]["prix"] * quantite
+        if produit in self.cache['matieres']:
+            return self.cache["matieres"][produit]["prix"] * quantite
         else:
-            recette = self.load_json(produit)
+            self.load_json(produit)
+            recette = self.cache[produit]
             facteur = sum(recette["ingredients"].values())
             quantite *= recette.get("taux-perte", 1)
             quantite *= recette.get("poids-paton", 1)
@@ -56,7 +57,10 @@ class Touille:
             return prix
 
     def touille(self):
-        for commande, quantite_commande in self.commandes.items():
+        self.load_json("matieres")
+        self.load_json("commandes")
+
+        for commande, quantite_commande in self.cache['commandes'].items():
             self.detail(commande, quantite_commande)
         FormatPrinter({float: "%.4f"}).pprint(self.ingredients)
 
