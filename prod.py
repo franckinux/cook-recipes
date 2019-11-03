@@ -31,9 +31,9 @@ class CacheJson:
                     ok = True
                 except Exception:
                     continue
-                if not ok:
-                    print(f"{basename}.json non trouvé")
-                    sys.exit(1)
+            if not ok:
+                print(f"{basename}.json non trouvé")
+                sys.exit(1)
             try:
                 self.cache[basename] = json.load(json_data)
             except json.decoder.JSONDecodeError as e:
@@ -59,7 +59,8 @@ class Touille:
             securite = recette.pop("securite", 0)
             if produit not in self.ingredients:
                 self.ingredients[produit] = {"recette": {}}
-                self.ingredients[produit]["prix-de-revient"] = 0
+                if "prix-de-vente-1kg-ttc" in recette:
+                    self.ingredients[produit]["prix-de-revient"] = 0
             prix = 0
             for ingredient, quantite_ingredient in recette["ingredients"].items():
                 # la sécurité est répercutée sur les quantités...
@@ -75,7 +76,8 @@ class Touille:
                 prix += self.detail(ingredient, quantite_ingredient_2)
 
             self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
-            self.ingredients[produit]["prix-de-revient"] += prix
+            if "prix-de-vente-1kg-ttc" in recette:
+                self.ingredients[produit]["prix-de-revient"] += prix
 
             if "prix-de-vente-1kg-ttc" in recette:
                 prix_de_vente_1kg_ht = recette["prix-de-vente-1kg-ttc"] / self.general["tva"]
@@ -92,16 +94,17 @@ class Touille:
 
         for commande, quantite_commande in self.commandes.items():
             self.detail(commande, quantite_commande)
-        FormatPrinter({float: "%.2f"}).pprint(self.ingredients)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--commandes", default="commandes", type=str)
-    parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres", type=str)
+    parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
+    parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
     parser.add_argument("-r", "--repertoires", nargs='*', default=[".", "recettes","commandes","matieres-premieres"])
     args = parser.parse_args()
 
     cache = CacheJson(args.repertoires)
     touille = Touille(cache)
-    touille.touille(args.matieres_premieres, args.commandes, "general")
+    for cmd in args.commandes:
+        touille.touille(args.matieres_premieres, cmd, "general")
+    FormatPrinter({float: "%.2f"}).pprint(touille.ingredients)
