@@ -54,25 +54,26 @@ class Touille:
         else:
             recette = self.cache.load_json(produit)
             facteur = sum(recette["ingredients"].values())
-            quantite *= recette.get("taux-perte", 1)
-            quantite *= recette.get("poids-paton", 1)
+            poids = quantite * recette.get("poids-paton", 1)
+            poids *= recette.get("taux-perte", 1)
             securite = recette.pop("securite", 0)
             if produit not in self.ingredients:
                 self.ingredients[produit] = {"recette": {}}
                 if "prix-de-vente-1kg-ttc" in recette:
                     self.ingredients[produit]["prix-de-revient"] = 0
+                    self.ingredients[produit]["quantite"] = 0
             prix = 0
             for ingredient, quantite_ingredient in recette["ingredients"].items():
                 # la sécurité est répercutée sur les quantités...
-                quantite += securite
-                quantite_ingredient_2 = (quantite * quantite_ingredient) / facteur
+                poids += securite
+                quantite_ingredient_2 = (poids * quantite_ingredient) / facteur
                 if ingredient in self.ingredients[produit]["recette"]:
                     self.ingredients[produit]["recette"][ingredient] += quantite_ingredient_2
                 else:
                     self.ingredients[produit]["recette"][ingredient] = quantite_ingredient_2
                 # ... mais pas sur les coûts !
-                quantite -= securite
-                quantite_ingredient_2 = (quantite * quantite_ingredient) / facteur
+                poids -= securite
+                quantite_ingredient_2 = (poids * quantite_ingredient) / facteur
                 prix += self.detail(ingredient, quantite_ingredient_2)
 
             self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
@@ -80,8 +81,10 @@ class Touille:
                 self.ingredients[produit]["prix-de-revient"] += prix
 
             if "prix-de-vente-1kg-ttc" in recette:
+                self.ingredients[produit]["quantite"] += quantite
+
                 prix_de_vente_1kg_ht = recette["prix-de-vente-1kg-ttc"] / self.general["tva"]
-                prix_de_revient_1kg_ht = prix / quantite
+                prix_de_revient_1kg_ht = prix / poids
                 taux_marge_brute = (prix_de_vente_1kg_ht - prix_de_revient_1kg_ht ) / prix_de_vente_1kg_ht
                 self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
