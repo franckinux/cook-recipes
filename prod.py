@@ -47,19 +47,25 @@ class Touille:
             facteur = sum(recette["ingredients"].values())
             quantite *= recette.get("taux-perte", 1)
             quantite *= recette.get("poids-paton", 1)
+            securite = recette.pop("securite", 0)
             if produit not in self.ingredients:
                 self.ingredients[produit] = {"recette": {}}
+                self.ingredients[produit]["prix-de-revient"] = 0
             prix = 0
             for ingredient, quantite_ingredient in recette["ingredients"].items():
-                quantite_ingredient = (quantite * quantite_ingredient) / facteur
-                quantite_ingredient += recette.pop("securite", 0)
+                # la sécurité est répercutée sur les quantités...
+                quantite += securite
+                quantite_ingredient_2 = (quantite * quantite_ingredient) / facteur
                 if ingredient in self.ingredients[produit]["recette"]:
-                    self.ingredients[produit]["recette"][ingredient] += quantite_ingredient
+                    self.ingredients[produit]["recette"][ingredient] += quantite_ingredient_2
                 else:
-                    self.ingredients[produit]["recette"][ingredient] = quantite_ingredient
-                prix += self.detail(ingredient, quantite_ingredient)
+                    self.ingredients[produit]["recette"][ingredient] = quantite_ingredient_2
+                # ... mais pas sur les coûts !
+                quantite -= securite
+                quantite_ingredient_2 = (quantite * quantite_ingredient) / facteur
+                prix += self.detail(ingredient, quantite_ingredient_2)
             self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
-            self.ingredients[produit]["prix"] = prix
+            self.ingredients[produit]["prix-de-revient"] += prix
             return prix
 
     def touille(self, matieres, commandes):
