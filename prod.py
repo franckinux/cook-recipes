@@ -64,13 +64,22 @@ class Touille:
                 quantite -= securite
                 quantite_ingredient_2 = (quantite * quantite_ingredient) / facteur
                 prix += self.detail(ingredient, quantite_ingredient_2)
+
             self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
             self.ingredients[produit]["prix-de-revient"] += prix
+
+            if "prix-de-vente-1kg-ttc" in recette:
+                prix_de_vente_1kg_ht = recette["prix-de-vente-1kg-ttc"] / self.general["tva"]
+                prix_de_revient_1kg_ht = prix / quantite
+                taux_marge_brute = (prix_de_vente_1kg_ht - prix_de_revient_1kg_ht ) / prix_de_vente_1kg_ht
+                self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
+
             return prix
 
-    def touille(self, matieres, commandes):
+    def touille(self, matieres, commandes, general):
         self.commandes = self.cache.load_json(commandes)
         self.matieres = self.cache.load_json(matieres)
+        self.general = self.cache.load_json(general)
 
         for commande, quantite_commande in self.commandes.items():
             self.detail(commande, quantite_commande)
@@ -79,4 +88,4 @@ class Touille:
 
 if __name__ == "__main__":
     touille = Touille()
-    touille.touille("matieres-premieres", "commandes")
+    touille.touille("matieres-premieres", "commandes", "general")
