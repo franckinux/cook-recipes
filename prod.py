@@ -1,4 +1,6 @@
+import argparse
 import json
+import os
 import pprint
 import sys
 
@@ -15,16 +17,23 @@ class FormatPrinter(pprint.PrettyPrinter):
 
 
 class CacheJson:
-    def __init__(self):
+    def __init__(self, repertoires):
         self.cache = {}
+        self.repertoires = repertoires
 
     def load_json(self, basename):
         if basename not in self.cache:
-            try:
-                json_data = open(basename + ".json", "r")
-            except Exception:
-                print(f"{basename}.json non trouvé")
-                sys.exit(1)
+            ok = False
+            for dir in self.repertoires:
+                try:
+                    fichier = os.path.join(dir, basename + ".json")
+                    json_data = open(fichier, "r")
+                    ok = True
+                except Exception:
+                    continue
+                if not ok:
+                    print(f"{basename}.json non trouvé")
+                    sys.exit(1)
             try:
                 self.cache[basename] = json.load(json_data)
             except json.decoder.JSONDecodeError as e:
@@ -35,9 +44,9 @@ class CacheJson:
 
 
 class Touille:
-    def __init__(self):
+    def __init__(self, cache):
         self.ingredients = {}
-        self.cache = CacheJson()
+        self.cache = cache
 
     def detail(self, produit, quantite):
         if produit in self.matieres:
@@ -87,5 +96,12 @@ class Touille:
 
 
 if __name__ == "__main__":
-    touille = Touille()
-    touille.touille("matieres-premieres", "commandes", "general")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--commandes", default="commandes", type=str)
+    parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres", type=str)
+    parser.add_argument("-r", "--repertoires", nargs='*', default=[".", "recettes","commandes","matieres-premieres"])
+    args = parser.parse_args()
+
+    cache = CacheJson(args.repertoires)
+    touille = Touille(cache)
+    touille.touille(args.matieres_premieres, args.commandes, "general")
