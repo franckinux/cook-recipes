@@ -83,7 +83,7 @@ class Touille:
 
         for commande, quantite_commande in self.commandes.items():
             self.detail(commande, quantite_commande)
-        FormatPrinter({float: "%.4f"}).pprint(self.ingredients)
+        FormatPrinter({float: "%.2f"}).pprint(self.ingredients)
 
 
 if __name__ == "__main__":

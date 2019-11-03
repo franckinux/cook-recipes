@@ -1,42 +1,133 @@
 {
+    "farine-t65":
+        {
+	     "prix": 1.29,
+	     "fournisseur": "GAEC La Belle Botte",
+             "conditionnement": "25kg"
+	},
+    "farine-t80":
+        {
+	     "prix": 2.29,
+	     "fournisseur": "GAEC La Belle Botte",
+             "conditionnement": "25kg"
+	},
+    "farine-t170":
+        {
+	     "prix": 1.61,
+	     "fournisseur": "GAEC La Belle Botte",
+             "conditionnement": "25kg"
+	},
+    "farine-mais":
+        {
+	     "prix": 1.70,
+	     "fournisseur": "-",
+             "conditionnement": "25kg"
+	},
+    "son":
+        {
+	     "prix": 0.23,
+	     "fournisseur": "-",
+             "conditionnement": "vrac"
+	},
+    "remoulage":
+        {
+	     "prix": 0.23,
+	     "fournisseur": "-",
+             "conditionnement": "vrac"
+	},
     "eau":
          {
 	     "prix": 0.0001,
-	     "fournisseur": "SAUR"
+	     "fournisseur": "SAUR",
+             "conditionnement": "vrac"
 	 },
     "sel":
          {
 	     "prix": 2.07,
-	     "fournisseur": "Leclerc"
+	     "fournisseur": "Leclerc",
+             "conditionnement": "1kg"
 	 },
-    "farine-t80":
+    "huile-olive":
+         {
+	     "prix": 10.50,
+	     "fournisseur": "Keramis",
+             "conditionnement": "5l"
+	 },
+    "noisettes-toastees":
+         {
+	     "prix": 13.80,
+	     "fournisseur": "Keramis",
+             "conditionnement": "15kg"
+	 },
+    "olives":
+         {
+	     "prix": 8.16,
+	     "fournisseur": "Keramis",
+             "conditionnement": "12kg"
+	 },
+    "raisins-secs":
+         {
+	     "prix": 6.37,
+	     "fournisseur": "Keramis",
+             "conditionnement": "12,5kg"
+	 },
+    "herbe-provence":
         {
-	     "prix": 1.03,
-	     "fournisseur": "GAEC La Belle Botte"
+	     "prix": 16.25,
+	     "fournisseur": "Keramis",
+             "conditionnement": "500g"
 	},
-    "farine-t170":
+    "cardamome-poudre":
         {
-	     "prix": 2.02,
-	     "fournisseur": "GAEC La Belle Botte"
+	     "prix": 108.3,
+	     "fournisseur": "bienanger.com",
+             "conditionnement": "35g"
+	},
+    "avine-gros":
+        {
+	     "prix": 1.39,
+	     "fournisseur": "Keramis",
+             "conditionnement": "25kg"
 	},
     "tournesol":
         {
-	     "prix": 4.01,
+	     "prix": 4.07,
 	     "fournisseur": "Leclerc"
 	},
     "lin-brun":
         {
-	     "prix": 2.03,
-	     "fournisseur": "Leclerc"
+	     "prix": 4.90,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac"
 	},
     "lin-dore":
         {
-	     "prix": 4.06,
-	     "fournisseur": "Leclerc"
+	     "prix": 6.00,
+	     "fournisseur": "-",
+             "conditionnement": "-"
 	},
     "sesame":
         {
-	     "prix": 3.05,
-	     "fournisseur": "Leclerc"
+	     "prix": 5.29,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac"
+	},
+    "sesame":
+        {
+	     "prix": 5.29,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac"
+	},
+    "courge":
+        {
+	     "prix": 10.76,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac"
+	},
+    "millet":
+        {
+	     "prix": 2.21,
+	     "fournisseur": "Keramis",
+             "conditionnement": "25kg"
 	}
 }

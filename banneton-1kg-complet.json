@@ -1,6 +1,9 @@
 {
     "ingredients": {
-        "pate-base-campagne": 1
+        "pate-base-campagne": 1,
+	"remoulage": 0.03,
+	"son": 0.015,
+	"eau": 0.045
     },
     "taux-perte": 1.03,
     "poids-paton": 1.18,

@@ -2,10 +2,10 @@
     "ingredients": {
         "pate-base-campagne": 1,
 	"melange-graines-1": 0.15,
-	"eau": 0.15
+	"eau": 0.15,
     },
     "taux-perte": 1.03,
-    "poids-paton": 1.18,
-    "poids-pain-cuit": 1,
+    "poids-paton": 7.05,
+    "poids-pain-cuit": 6,
     "prix-de-vente-1kg-ttc": 6.50
 }

@@ -1,0 +1,12 @@
+{
+    "ingredients": {
+        "pate-base-campagne": 1,
+	"remoulage": 0.03,
+	"son": 0.015,
+	"eau": 0.045
+    },
+    "taux-perte": 1.03,
+    "poids-paton": 7.05,
+    "poids-pain-cuit": 6,
+    "prix-de-vente-1kg-ttc": 4.5
+}

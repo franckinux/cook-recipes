@@ -1,0 +1,15 @@
+{
+    "ingredients": {
+        "farine-mais": 0.5,
+	"eau": 0.5,
+	"sel": 0.02,
+        "farine-t65": 0.5,
+	"levain-seigle-120pch": 0.2,
+	"eau": 0.225
+
+    },
+    "taux-perte": 1.03,
+    "poids-paton": 1.4,
+    "poids-paint-cuit": 1.250,
+    "prix-de-vente-1kg-ttc": 5.5
+}
