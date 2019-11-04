@@ -2,7 +2,7 @@
     "ingredients": {
         "pate-base-campagne": 1,
 	"huile-olive": 0.05,
-	"herbes_provence": 0.012,
+	"herbes-provence": 0.012,
 	"olives": 0.2
     },
     "taux-perte": 1.03,

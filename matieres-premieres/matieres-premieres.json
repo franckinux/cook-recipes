@@ -37,13 +37,13 @@
 	},
     "eau":
          {
-	     "prix": 0.0001,
+	     "prix": 0.00001,
 	     "fournisseur": "SAUR",
              "conditionnement": "vrac"
 	 },
     "sel":
          {
-	     "prix": 2.07,
+	     "prix": 0.70,
 	     "fournisseur": "Leclerc",
              "conditionnement": "1kg"
 	 },
@@ -52,6 +52,12 @@
 	     "prix": 10.50,
 	     "fournisseur": "Keramis",
              "conditionnement": "5l"
+	 },
+    "avoine-gros":
+         {
+	     "prix": 1.39,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac"
 	 },
     "noisettes-toastees":
          {
@@ -71,7 +77,7 @@
 	     "fournisseur": "Keramis",
              "conditionnement": "12,5kg"
 	 },
-    "herbe-provence":
+    "herbes-provence":
         {
 	     "prix": 16.25,
 	     "fournisseur": "Keramis",
@@ -82,12 +88,6 @@
 	     "prix": 108.3,
 	     "fournisseur": "bienanger.com",
              "conditionnement": "35g"
-	},
-    "avine-gros":
-        {
-	     "prix": 1.39,
-	     "fournisseur": "Keramis",
-             "conditionnement": "25kg"
 	},
     "tournesol":
         {
@@ -102,15 +102,9 @@
 	},
     "lin-dore":
         {
-	     "prix": 6.00,
-	     "fournisseur": "-",
-             "conditionnement": "-"
-	},
-    "sesame":
-        {
-	     "prix": 5.29,
-	     "fournisseur": "Leclerc",
-             "conditionnement": "vrac"
+	     "prix": 4.01,
+	     "fournisseur": "Keramis",
+             "conditionnement": "25kg"
 	},
     "sesame":
         {
