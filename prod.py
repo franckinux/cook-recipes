@@ -60,7 +60,7 @@ class Touille:
             if produit not in self.ingredients:
                 self.ingredients[produit] = {"recette": {}}
                 if "prix-de-vente-1kg-ttc" in recette:
-                    self.ingredients[produit]["prix-de-revient"] = 0
+                    self.ingredients[produit]["prix-de-revient-ht"] = 0
                     self.ingredients[produit]["quantite"] = 0
             prix = 0
             for ingredient, quantite_ingredient in recette["ingredients"].items():
@@ -78,16 +78,16 @@ class Touille:
 
             self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
             if "prix-de-vente-1kg-ttc" in recette:
-                self.ingredients[produit]["prix-de-revient"] += prix
-
-            if "prix-de-vente-1kg-ttc" in recette:
+                self.ingredients[produit]["prix-de-revient-ht"] += prix
                 self.ingredients[produit]["quantite"] += quantite
 
                 prix_de_vente_1kg_ht = recette["prix-de-vente-1kg-ttc"] / self.general["tva"]
                 prix_de_revient_1kg_ht = prix / poids
-                taux_marge_brute = (prix_de_vente_1kg_ht - prix_de_revient_1kg_ht ) / prix_de_vente_1kg_ht
+                taux_marge_brute = (prix_de_vente_1kg_ht - prix_de_revient_1kg_ht) / prix_de_vente_1kg_ht
                 self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
+                self.ingredients[produit]["prix-piece-ttc"] = prix_de_revient_1kg_ht * self.general["tva"] * recette["poids-paton"]
+                self.ingredients[produit]["poids-paton"] = recette["poids-paton"]
             return prix
 
     def touille(self, matieres, commandes, general):
@@ -103,11 +103,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
     parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
-    parser.add_argument("-r", "--repertoires", nargs='*', default=[".", "recettes","commandes","matieres-premieres"])
+    parser.add_argument("-r", "--repertoires", nargs='*', default=[".", "recettes", "commandes", "matieres-premieres"])
     args = parser.parse_args()
 
     cache = CacheJson(args.repertoires)
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
-    FormatPrinter({float: "%.2f"}).pprint(touille.ingredients)
+    FormatPrinter({float: "%.3f"}).pprint(touille.ingredients)
