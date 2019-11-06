@@ -17,21 +17,15 @@ class FormatPrinter(pprint.PrettyPrinter):
 
 
 class CacheJson:
-    def __init__(self, repertoires):
+    def __init__(self):
         self.cache = {}
-        self.repertoires = repertoires
 
-    def load_json(self, basename):
+    def load_json(self, repertoire, basename):
         if basename not in self.cache:
-            ok = False
-            for dir in self.repertoires:
-                try:
-                    fichier = os.path.join(dir, basename + ".json")
-                    json_data = open(fichier, "r")
-                    ok = True
-                except Exception:
-                    continue
-            if not ok:
+            fichier = os.path.join(repertoire, basename + ".json")
+            try:
+                json_data = open(fichier, "r")
+            except Exception:
                 print(f"{basename}.json non trouvé")
                 sys.exit(1)
             try:
@@ -48,65 +42,77 @@ class Touille:
         self.ingredients = {}
         self.cache = cache
 
-    def detail(self, produit, quantite):
-        if produit in self.matieres:
-            return self.matieres[produit]["prix"] * quantite
+    def detail(self, ingredient, quantite_ingredient):
+        if ingredient in self.matieres:
+            return self.matieres[ingredient]["prix"] * quantite_ingredient, {}
         else:
-            recette = self.cache.load_json(produit)
-            facteur = sum(recette["ingredients"].values())
-            poids = quantite * recette.get("poids-paton", 1)
-            poids *= recette.get("taux-perte", 1)
-            securite = recette.pop("securite", 0)
-            if produit not in self.ingredients:
-                self.ingredients[produit] = {"recette": {}}
+            recette = self.cache.load_json("recettes", ingredient)
+            try:
+                facteur = sum(recette.values())
+            except:
+                import pdb; pdb.set_trace()
+            if ingredient not in self.ingredients:
+                self.ingredients[ingredient] = {"recette": {}}
                 if "prix-de-vente-1kg-ttc" in recette:
-                    self.ingredients[produit]["prix-de-revient-ht"] = 0
-                    self.ingredients[produit]["quantite"] = 0
+                    self.ingredients[ingredient]["prix-de-revient-ht"] = 0
+                    self.ingredients[ingredient]["quantite"] = 0
             prix = 0
-            for ingredient, quantite_ingredient in recette["ingredients"].items():
-                # la sécurité est répercutée sur les quantités...
-                poids += securite
-                quantite_ingredient_2 = (poids * quantite_ingredient) / facteur
-                if ingredient in self.ingredients[produit]["recette"]:
-                    self.ingredients[produit]["recette"][ingredient] += quantite_ingredient_2
+            ingredients_recette = {}
+            for sous_ingredient, quantite_sous_ingredient in recette.items():
+                if sous_ingredient.startswith('-'):
+                    continue
+                ingredients_dual = sous_ingredient.split(':')
+                if len(ingredients_dual) == 1:
+                    nom_ingredient, alias_ingredient = sous_ingredient, sous_ingredient
                 else:
-                    self.ingredients[produit]["recette"][ingredient] = quantite_ingredient_2
-                # ... mais pas sur les coûts !
-                poids -= securite
-                quantite_ingredient_2 = (poids * quantite_ingredient) / facteur
-                prix += self.detail(ingredient, quantite_ingredient_2)
+                    nom_ingredient, alias_ingredient = ingredients_dual
+                quantite_ingredient_2 = (quantite_ingredient * quantite_sous_ingredient) / facteur
+                if alias_ingredient in self.ingredients[ingredient]["recette"]:
+                    self.ingredients[ingredient]["recette"][alias_ingredient] += quantite_ingredient_2
+                else:
+                    self.ingredients[ingredient]["recette"][alias_ingredient] = quantite_ingredient_2
+                ingredients_recette[alias_ingredient] = quantite_ingredient_2
+                prix2, _ = self.detail(nom_ingredient, quantite_ingredient_2)
+                prix += prix2
 
-            self.ingredients[produit]["poids-total"] = sum(self.ingredients[produit]["recette"].values())
-            if "prix-de-vente-1kg-ttc" in recette:
-                self.ingredients[produit]["prix-de-revient-ht"] += prix
-                self.ingredients[produit]["quantite"] += quantite
-
-                prix_de_vente_1kg_ht = recette["prix-de-vente-1kg-ttc"] / self.general["tva"]
-                prix_de_revient_1kg_ht = prix / poids
-                taux_marge_brute = (prix_de_vente_1kg_ht - prix_de_revient_1kg_ht) / prix_de_vente_1kg_ht
-                self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
-
-                self.ingredients[produit]["prix-piece-ttc"] = prix_de_revient_1kg_ht * self.general["tva"] * recette["poids-paton"]
-                self.ingredients[produit]["poids-paton"] = recette["poids-paton"]
-            return prix
+            self.ingredients[ingredient]["poids-total"] = sum(self.ingredients[ingredient]["recette"].values())
+            return prix, ingredients_recette
 
     def touille(self, matieres, commandes, general):
-        self.commandes = self.cache.load_json(commandes)
-        self.matieres = self.cache.load_json(matieres)
-        self.general = self.cache.load_json(general)
+        self.commandes = self.cache.load_json("commandes", commandes)
+        self.matieres = self.cache.load_json("matieres-premieres", matieres)
+        self.general = self.cache.load_json(".", general)
 
-        for commande, quantite_commande in self.commandes.items():
-            self.detail(commande, quantite_commande)
+        for produit, quantite in self.commandes.items():
+            infos_produit = self.cache.load_json("produits", produit)
+            self.ingredients[produit] = {}
+
+            poids_paton = infos_produit["poids-paton"]
+            poids = quantite * poids_paton
+            taux_perte = infos_produit.get("taux-perte", 1)
+            prix, recette = self.detail(infos_produit["recette"], poids * taux_perte)
+
+            self.ingredients[produit]["recette"] = recette
+            self.ingredients[produit]["quantite"] = quantite
+            self.ingredients[produit]["poids-paton"] = poids_paton
+
+            if "prix-de-vente-1kg-ttc" in infos_produit:
+                prix_de_vente_piece_ttc = infos_produit["prix-de-vente-1kg-ttc"] * infos_produit["poids-pain-cuit"]
+                self.ingredients[produit]["prix-de-vente-piece-ttc"] = prix_de_vente_piece_ttc
+
+                prix_de_vente_piece_ht = prix_de_vente_piece_ttc / self.general["tva"]
+                prix_de_revient_piece_ht = prix / quantite
+                taux_marge_brute = (prix_de_vente_piece_ht - prix_de_revient_piece_ht) / prix_de_vente_piece_ht
+                self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
     parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
-    parser.add_argument("-r", "--repertoires", nargs='*', default=[".", "recettes", "commandes", "matieres-premieres"])
     args = parser.parse_args()
 
-    cache = CacheJson(args.repertoires)
+    cache = CacheJson()
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")

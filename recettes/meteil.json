@@ -1,14 +1,8 @@
 {
-    "ingredients": {
-        "farine-t80": 0.5,
-        "farine-t170": 0.5,
-        "eau": 0.7,
-	"levain-seigle-120pch": 0.2,
-	"sel": 0.02,
-	"eau": 0.12
-    },
-    "taux-perte": 1.03,
-    "poids-paton": 1.3,
-    "poids-pain-cuit": 1.1,
-    "prix-de-vente-1kg-ttc": 4.5
+    "farine-t80": 0.5,
+    "farine-t170": 0.5,
+    "eau:eau-de-frasage": 0.7,
+    "levain-seigle-120pch": 0.2,
+    "sel": 0.02,
+    "eau:eau-de-bassinage": 0.12
 }

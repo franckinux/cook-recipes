@@ -1,7 +1,5 @@
 {
-    "ingredients": {
-        "pate-base-campagne": 1
-    },
+    "recette": "campagne-complet",
     "taux-perte": 1.03,
     "poids-paton": 7.05,
     "poids-pain-cuit": 6,

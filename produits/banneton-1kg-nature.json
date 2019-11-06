@@ -1,7 +1,5 @@
 {
-    "ingredients": {
-        "pate-base-campagne": 1
-    },
+    "recette": "campagne-nature",
     "taux-perte": 1.03,
     "poids-paton": 1.18,
     "poids-pain-cuit": 1,

@@ -55,15 +55,17 @@
 	 },
     "avoine-gros":
          {
-	     "prix": 1.39,
-	     "fournisseur": "Leclerc",
-             "conditionnement": "vrac"
+	     "prix": 2.98,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "3.14 ttc"
 	 },
     "noisettes-toastees":
          {
-	     "prix": 13.80,
-	     "fournisseur": "Keramis",
-             "conditionnement": "15kg"
+	     "prix": 26.45,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "27.91 ttc"
 	 },
     "olives":
          {
@@ -73,9 +75,10 @@
 	 },
     "raisins-secs":
          {
-	     "prix": 6.37,
-	     "fournisseur": "Keramis",
-             "conditionnement": "12,5kg"
+	     "prix": 5.92,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "6.25 ttc"
 	 },
     "herbes-provence":
         {
@@ -91,32 +94,38 @@
 	},
     "tournesol":
         {
-	     "prix": 4.07,
-	     "fournisseur": "Leclerc"
+	     "prix": 3.86,
+	     "fournisseur": "Leclerc",
+             "conditionnement": "vrac",
+	     "commentaire": "4.07 ttc"
 	},
     "lin-brun":
         {
-	     "prix": 4.90,
-	     "fournisseur": "Leclerc",
-             "conditionnement": "vrac"
+	     "prix": 4.50,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "4.75 ttc"
 	},
     "lin-dore":
         {
-	     "prix": 4.01,
-	     "fournisseur": "Keramis",
-             "conditionnement": "25kg"
+	     "prix": 6.03,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "6.36 ttc"
 	},
     "sesame":
         {
-	     "prix": 5.29,
-	     "fournisseur": "Leclerc",
-             "conditionnement": "vrac"
+	     "prix": 5.04,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "5.32 ttc"
 	},
     "courge":
         {
-	     "prix": 10.76,
-	     "fournisseur": "Leclerc",
-             "conditionnement": "vrac"
+	     "prix": 15.99,
+	     "fournisseur": "Biocoop",
+             "conditionnement": "vrac",
+	     "commentaire": "16.87 ttc"
 	},
     "millet":
         {

@@ -1,9 +1,5 @@
 {
-    "ingredients": {
-        "pate-base-campagne": 1,
-	"melange-graines-1": 0.15,
-	"eau": 0.15
-    },
+    "recette": "campagne-graines",
     "taux-perte": 1.03,
     "poids-paton": 1.18,
     "poids-pain-cuit": 1,
