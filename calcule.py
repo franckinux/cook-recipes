@@ -40,6 +40,7 @@ class CacheJson:
 class Touille:
     def __init__(self, cache):
         self.ingredients = {}
+        self.produits = {}
         self.cache = cache
 
     def detail(self, ingredient, quantite_ingredient):
@@ -47,10 +48,7 @@ class Touille:
             return self.matieres[ingredient]["prix"] * quantite_ingredient, {}
         else:
             recette = self.cache.load_json("recettes", ingredient)
-            try:
-                facteur = sum(recette.values())
-            except:
-                import pdb; pdb.set_trace()
+            facteur = sum(recette.values())
             if ingredient not in self.ingredients:
                 self.ingredients[ingredient] = {"recette": {}}
                 if "prix-de-vente-1kg-ttc" in recette:
@@ -85,25 +83,25 @@ class Touille:
 
         for produit, quantite in self.commandes.items():
             infos_produit = self.cache.load_json("produits", produit)
-            self.ingredients[produit] = {}
+            self.produits[produit] = {}
 
             poids_paton = infos_produit["poids-paton"]
             poids = quantite * poids_paton
             taux_perte = infos_produit.get("taux-perte", 1)
             prix, recette = self.detail(infos_produit["recette"], poids * taux_perte)
 
-            self.ingredients[produit]["recette"] = recette
-            self.ingredients[produit]["quantite"] = quantite
-            self.ingredients[produit]["poids-paton"] = poids_paton
+            self.produits[produit]["recette"] = recette
+            self.produits[produit]["quantite"] = quantite
+            self.produits[produit]["poids-paton"] = poids_paton
 
             if "prix-de-vente-1kg-ttc" in infos_produit:
                 prix_de_vente_piece_ttc = infos_produit["prix-de-vente-1kg-ttc"] * infos_produit["poids-pain-cuit"]
-                self.ingredients[produit]["prix-de-vente-piece-ttc"] = prix_de_vente_piece_ttc
+                self.produits[produit]["prix-de-vente-piece-ttc"] = prix_de_vente_piece_ttc
 
                 prix_de_vente_piece_ht = prix_de_vente_piece_ttc / self.general["tva"]
                 prix_de_revient_piece_ht = prix / quantite
                 taux_marge_brute = (prix_de_vente_piece_ht - prix_de_revient_piece_ht) / prix_de_vente_piece_ht
-                self.ingredients[produit]["taux-marge-brute"] = taux_marge_brute * 100
+                self.produits[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
 
 if __name__ == "__main__":
@@ -116,4 +114,5 @@ if __name__ == "__main__":
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
+    FormatPrinter({float: "%.3f"}).pprint(touille.produits)
     FormatPrinter({float: "%.3f"}).pprint(touille.ingredients)
