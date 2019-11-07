@@ -1,26 +1,25 @@
 import argparse
-import json
 import os
 import sys
 import yaml
 
 
-class CacheJson:
+class CacheYaml:
     def __init__(self):
         self.cache = {}
 
-    def load_json(self, repertoire, basename):
+    def load_yaml(self, repertoire, basename):
         if (repertoire, basename) not in self.cache:
-            fichier = os.path.join(repertoire, basename + ".json")
+            fichier = os.path.join(repertoire, basename + ".yaml")
             try:
-                json_data = open(fichier, "r")
-            except Exception:
-                print(f"{basename}.json non trouvé")
+                stream = open(fichier, 'r')
+            except FileNotFoundError:
+                print(f"{fichier} non trouvé")
                 sys.exit(1)
             try:
-                self.cache[(repertoire, basename)] = json.load(json_data)
-            except json.decoder.JSONDecodeError as e:
-                print(f"erreur de syntaxe dans le fichier {basename}.json (\"{e}\")")
+                self.cache[(repertoire, basename)] = yaml.safe_load(stream)
+            except yaml.YAMLError as e:
+                print(f"erreur de syntaxe dans le fichier {fichier} (\"{e}\")")
                 sys.exit(2)
 
         return self.cache[(repertoire, basename)]
@@ -36,21 +35,20 @@ class Touille:
         if ingredient in self.matieres:
             return self.matieres[ingredient]["prix"] * quantite_ingredient, {}
         else:
-            recette = self.cache.load_json("recettes", ingredient)
+            recette = self.cache.load_yaml("recettes", ingredient)
             facteur = sum(recette.values())
             if ingredient not in self.ingredients:
                 self.ingredients[ingredient] = {"recette": {}}
                 if "prix-de-vente-1kg-ttc" in recette:
-                    self.ingredients[ingredient]["prix-de-revient-ht"] = 0
                     self.ingredients[ingredient]["quantite"] = 0
             prix = 0
             ingredients_recette = {}
             for sous_ingredient, quantite_sous_ingredient in recette.items():
                 if sous_ingredient.startswith('-'):
                     continue
-                ingredients_dual = sous_ingredient.split(':')
+                ingredients_dual = sous_ingredient.split('|')
                 if len(ingredients_dual) == 1:
-                    nom_ingredient, alias_ingredient = sous_ingredient, sous_ingredient
+                    nom_ingredient, alias_ingredient = (sous_ingredient,) * 2
                 else:
                     nom_ingredient, alias_ingredient = ingredients_dual
                 quantite_ingredient_2 = (quantite_ingredient * quantite_sous_ingredient) / facteur
@@ -66,12 +64,12 @@ class Touille:
             return prix, ingredients_recette
 
     def touille(self, matieres, commandes, general):
-        self.commandes = self.cache.load_json("commandes", commandes)
-        self.matieres = self.cache.load_json("matieres-premieres", matieres)
-        self.general = self.cache.load_json(".", general)
+        self.commandes = self.cache.load_yaml("commandes", commandes)
+        self.matieres = self.cache.load_yaml("matieres-premieres", matieres)
+        self.general = self.cache.load_yaml(".", general)
 
         for produit, quantite in self.commandes.items():
-            infos_produit = self.cache.load_json("produits", produit)
+            infos_produit = self.cache.load_yaml("produits", produit)
             self.produits[produit] = {}
 
             poids_paton = infos_produit["poids-paton"]
@@ -104,7 +102,7 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
     args = parser.parse_args()
 
-    cache = CacheJson()
+    cache = CacheYaml()
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
