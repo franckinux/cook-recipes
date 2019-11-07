@@ -1,19 +1,8 @@
 import argparse
 import json
 import os
-import pprint
 import sys
-
-
-class FormatPrinter(pprint.PrettyPrinter):
-    def __init__(self, formats):
-        super(FormatPrinter, self).__init__()
-        self.formats = formats
-
-    def format(self, obj, ctx, maxlvl, lvl):
-        if type(obj) in self.formats:
-            return self.formats[type(obj)] % obj, 1, 0
-        return pprint.PrettyPrinter.format(self, obj, ctx, maxlvl, lvl)
+import yaml
 
 
 class CacheJson:
@@ -104,6 +93,11 @@ class Touille:
                 self.produits[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
 
+def float_representer(dumper, value):
+    text = '{0:.3f}'.format(value)
+    return dumper.represent_scalar(u'tag:yaml.org,2002:float', text)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
@@ -114,5 +108,7 @@ if __name__ == "__main__":
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
-    FormatPrinter({float: "%.3f"}).pprint(touille.produits)
-    FormatPrinter({float: "%.3f"}).pprint(touille.ingredients)
+
+    yaml.add_representer(float, float_representer)
+    print(yaml.dump(touille.produits, default_flow_style=False))
+    print(yaml.dump(touille.ingredients, default_flow_style=False))
