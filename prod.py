@@ -21,7 +21,7 @@ class CacheJson:
         self.cache = {}
 
     def load_json(self, repertoire, basename):
-        if basename not in self.cache:
+        if (repertoire, basename) not in self.cache:
             fichier = os.path.join(repertoire, basename + ".json")
             try:
                 json_data = open(fichier, "r")
@@ -29,12 +29,12 @@ class CacheJson:
                 print(f"{basename}.json non trouvé")
                 sys.exit(1)
             try:
-                self.cache[basename] = json.load(json_data)
+                self.cache[(repertoire, basename)] = json.load(json_data)
             except json.decoder.JSONDecodeError as e:
                 print(f"erreur de syntaxe dans le fichier {basename}.json (\"{e}\")")
                 sys.exit(2)
 
-        return self.cache[basename]
+        return self.cache[(repertoire, basename)]
 
 
 class Touille:
