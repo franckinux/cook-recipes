@@ -1,4 +1,5 @@
 import argparse
+from jinja2 import Environment, PackageLoader
 import os
 import sys
 import yaml
@@ -30,6 +31,7 @@ class Touille:
         self.ingredients = {}
         self.produits = {}
         self.cache = cache
+        self.env = Environment(loader=PackageLoader("calcule", "templates"))
 
     def detail(self, ingredient, quantite_ingredient):
         if ingredient in self.matieres:
@@ -87,13 +89,14 @@ class Touille:
 
                 prix_de_vente_piece_ht = prix_de_vente_piece_ttc / self.general["tva"]
                 prix_de_revient_piece_ht = prix / quantite
+                self.produits[produit]["prix-de-revient-piece-ht"] = prix_de_revient_piece_ht
                 taux_marge_brute = (prix_de_vente_piece_ht - prix_de_revient_piece_ht) / prix_de_vente_piece_ht
                 self.produits[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
-
-def float_representer(dumper, value):
-    text = '{0:.3f}'.format(value)
-    return dumper.represent_scalar(u'tag:yaml.org,2002:float', text)
+    def presente(self):
+        template = self.env.get_template("template.html")
+        with open("plan.html", "w") as html:
+            html.write(template.render(ingr=self.ingredients, prod=self.produits))
 
 
 if __name__ == "__main__":
@@ -107,6 +110,4 @@ if __name__ == "__main__":
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
 
-    yaml.add_representer(float, float_representer)
-    print(yaml.dump(touille.produits, default_flow_style=False))
-    print(yaml.dump(touille.ingredients, default_flow_style=False))
+    touille.presente()

@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: sans-serif;
+                font-size: 8px;
+            }
+            table {
+                border-collapse: collapse;
+                border: 1px solid black;
+                margin-bottom: 20px;
+                width: 300px;
+            }
+            td {
+                border: 1px solid black;
+                padding: 3px;
+            }
+            .header {
+                background-color: lightgrey;
+                text-align: center;
+                font-size: 120%;
+                font-weight: bold;
+            }
+            .nombre {
+                text-align: right;
+            }
+           .column {
+               flex: 50%;
+           }
+           .row {
+               display: flex;
+           }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="column">
+                {% for key, value in prod.items() %}
+                <table>
+                    <tr>
+                        <td colspan="3" class="header">{{ key | capitalize | replace("-", " ") }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Poids pâton</td>
+                        <td class="nombre">{{ "%0.3f" | format(value["poids-paton"]) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Quantité</td>
+                        <td class="nombre">{{ value.quantite }}</td>
+                    </tr>
+                    {% if "prix-de-revient-piece-ht" in value %}
+                    <tr>
+                        <td colspan="2">Prix de revient pièce HT</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["prix-de-revient-piece-ht"]) }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if "prix-de-vente-piece-ttc" in value %}
+                    <tr>
+                        <td colspan="2">Prix de vente pièce TTC</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["prix-de-vente-piece-ttc"]) }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if "taux-marge-brute" in value %}
+                    <tr>
+                        <td colspan="2">Taux de marge brute</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["taux-marge-brute"]) }}</td>
+                    </tr>
+                    {% endif %}
+                    {% for k, v in value.recette.items() %}
+                    <tr>
+                        {% if loop.first %}
+                        <td rowspan="{{ loop.length }}">Recette</td>
+                        {% endif %}
+                        <td>{{ k  | capitalize | replace("-", " ") }}</td>
+                        <td class="nombre">{{ "%0.3f" | format(v) }} </td>
+                    </tr>
+                   {% endfor %}
+               </table>
+               {% endfor %}
+            </div>
+            <div class="column">
+                {% for key, value in ingr.items() %}
+                <table>
+                    <tr>
+                        <td colspan="3" class="header">{{ key | capitalize | replace("-", " ") }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Poids total</td>
+                        <td class="nombre">{{ "%0.3f" | format(value["poids-total"]) }}</td>
+                    </tr>
+                    {% for k, v in value.recette.items() %}
+                    <tr>
+                        {% if loop.first %}
+                        <td rowspan="{{ loop.length }}">Recette</td>
+                        {% endif %}
+                        <td>{{ k  | capitalize | replace("-", " ") }}</td>
+                        <td class="nombre">{{ "%0.3f" | format(v) }} </td>
+                    </tr>
+                   {% endfor %}
+               </table>
+               {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>
