@@ -93,21 +93,33 @@ class Touille:
                 taux_marge_brute = (prix_de_vente_piece_ht - prix_de_revient_piece_ht) / prix_de_vente_piece_ht
                 self.produits[produit]["taux-marge-brute"] = taux_marge_brute * 100
 
-    def presente(self):
-        template = self.env.get_template("template.html")
-        with open("plan.html", "w") as html:
-            html.write(template.render(ingr=self.ingredients, prod=self.produits))
+    def presente(self, html):
+        print(yaml.dump(self.produits, default_flow_style=False))
+        print(yaml.dump(self.ingredients, default_flow_style=False))
+
+        if html is not None:
+            template = self.env.get_template("template.html")
+            with open(html + ".html", "w") as fichier:
+                fichier.write(template.render(ingr=self.ingredients, prod=self.produits))
+
+
+def float_representer(dumper, value):
+    text = '{0:.3f}'.format(value)
+    return dumper.represent_scalar(u'tag:yaml.org,2002:float', text)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
     parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
+    parser.add_argument("-t", "--html")
     args = parser.parse_args()
 
     cache = CacheYaml()
+    yaml.add_representer(float, float_representer)
+
     touille = Touille(cache)
     for cmd in args.commandes:
         touille.touille(args.matieres_premieres, cmd, "general")
 
-    touille.presente()
+    touille.presente(args.html)
