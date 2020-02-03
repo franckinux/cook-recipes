@@ -40,10 +40,10 @@ avoine-gros:
      conditionnement: vrac
      commentaire: 3.14 ttc
 noisettes-toastees:
-     prix: 26.45
-     fournisseur: Biocoop
+     prix: 15.55
+     fournisseur: Intermarché
      conditionnement: vrac
-     commentaire: 27.91 ttc
+     commentaire: 16.40 ttc
 olives:
      prix: 8.16
      fournisseur: Keramis
@@ -67,10 +67,10 @@ tournesol:
      conditionnement: vrac
      commentaire: 4.07 ttc
 lin-brun:
-     prix: 4.50
-     fournisseur: Biocoop
+     prix: 4.23
+     fournisseur: Intermarché
      conditionnement: vrac
-     commentaire: 4.75 ttc
+     commentaire: 4.45 ttc
 lin-dore:
      prix: 6.03
      fournisseur: Biocoop
@@ -78,15 +78,41 @@ lin-dore:
      commentaire: 6.36 ttc
 sesame:
      prix: 5.04
-     fournisseur: Biocoop
+     fournisseur: Leclerc
      conditionnement: vrac
-     commentaire: 5.32 ttc
+     commentaire: 5.29 ttc
 courge:
      prix: 15.99
      fournisseur: Biocoop
      conditionnement: vrac
      commentaire: 16.87 ttc
 millet:
-     prix: 2.21
-     fournisseur: Keramis
+     prix: 4.03
+     fournisseur: Intermarché
      conditionnement: 25kg
+     commentaire: 4.25 ttc
+beurre:
+     prix: 8
+     fournisseur: Intermarché
+     conditionnement: 250g
+     commentaire: prix au pif
+sucre:
+     prix: 8
+     fournisseur: Intermarché
+     conditionnement: 1kg
+     commentaire: prix au pif
+oeuf:
+     prix: 8
+     fournisseur: Intermarché
+     conditionnement: 1kg
+     commentaire: prix au pif
+pruneaux-denoyautes:
+     prix: 8
+     fournisseur: Intermarché
+     conditionnement: 1kg
+     commentaire: prix au pif
+the:
+     prix: 8
+     fournisseur: Intermarché
+     conditionnement: 1kg
+     commentaire: prix au pif
