@@ -46,8 +46,6 @@ class Touille:
             prix = 0
             ingredients_recette = {}
             for sous_ingredient, quantite_sous_ingredient in recette.items():
-                if sous_ingredient.startswith('-'):
-                    continue
                 ingredients_dual = sous_ingredient.split('|')
                 if len(ingredients_dual) == 1:
                     nom_ingredient, alias_ingredient = (sous_ingredient,) * 2

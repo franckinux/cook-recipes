@@ -2,5 +2,5 @@ pate-base-campagne: 1
 noisettes-toastees: 0.1
 raisins-secs: 0.1
 eau: 0.1
--cardamome-poudre: 0.002
--millet: 0.015
+#cardamome-poudre: 0.002
+millet: 0.015
