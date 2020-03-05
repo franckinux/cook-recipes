@@ -69,6 +69,9 @@ class Touille:
         self.general = self.cache.load_yaml(".", general)
 
         for produit, quantite in self.commandes.items():
+            if quantite == 0:
+                continue
+
             infos_produit = self.cache.load_yaml("produits", produit)
             self.produits[produit] = {}
 
