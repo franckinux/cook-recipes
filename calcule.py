@@ -1,6 +1,7 @@
+#! /usr/bin/env python3
 import argparse
 from jinja2 import Environment, PackageLoader
-import os
+from pathlib import Path
 import sys
 import yaml
 
@@ -11,7 +12,7 @@ class CacheYaml:
 
     def load_yaml(self, repertoire, basename):
         if (repertoire, basename) not in self.cache:
-            fichier = os.path.join(repertoire, basename + ".yaml")
+            fichier = Path("data", repertoire, basename).with_suffix(".yaml")
             try:
                 stream = open(fichier, 'r')
             except FileNotFoundError:
