@@ -37,43 +37,43 @@
     <body>
         <div class="row">
             <div class="column">
-                {% for key, value in prod.items() %}
+                {% for key, value in products.items() %}
                 <table>
                     <tr>
-                        <td colspan="3" class="header">{{ key | capitalize | replace("-", " ") }}</td>
+                        <td colspan="3" class="header">{{ key | capitalize | replace("_", " ") }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2">Poids pâton</td>
-                        <td class="nombre">{{ "%0.3f" | format(value["poids-paton"]) }}</td>
+                        <td colspan="2">Dough weight</td>
+                        <td class="nombre">{{ "%0.3f" | format(value["dough_weight"]) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2">Quantité</td>
-                        <td class="nombre">{{ value.quantite }}</td>
+                        <td colspan="2">Quantity</td>
+                        <td class="nombre">{{ value.quantity }}</td>
                     </tr>
-                    {% if "prix-de-revient-piece-ht" in value %}
+                    {% if "cost_price_per_piece_tax_exclusive" in value %}
                     <tr>
-                        <td colspan="2">Prix de revient pièce HT</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["prix-de-revient-piece-ht"]) }}</td>
+                        <td colspan="2">Cost price per piece tax exclusive</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["cost_price_per_piece_tax_exclusive"]) }}</td>
                     </tr>
                     {% endif %}
-                    {% if "prix-de-vente-piece-ttc" in value %}
+                    {% if "selling_price_per_piece_tax_inclusive" in value %}
                     <tr>
-                        <td colspan="2">Prix de vente pièce TTC</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["prix-de-vente-piece-ttc"]) }}</td>
+                        <td colspan="2">Selling price per piece tax inclusive</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_tax_inclusive"]) }}</td>
                     </tr>
                     {% endif %}
-                    {% if "taux-marge-brute" in value %}
+                    {% if "gross_margin_rate" in value %}
                     <tr>
-                        <td colspan="2">Taux de marge brute</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["taux-marge-brute"]) }}</td>
+                        <td colspan="2">Gross margin rate</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["gross_margin_rate"]) }}</td>
                     </tr>
                     {% endif %}
-                    {% for k, v in value.recette.items() %}
+                    {% for k, v in value.recipe.items() %}
                     <tr>
                         {% if loop.first %}
-                        <td rowspan="{{ loop.length }}">Recette</td>
+                        <td rowspan="{{ loop.length }}">Recipe</td>
                         {% endif %}
-                        <td>{{ k  | capitalize | replace("-", " ") }}</td>
+                        <td>{{ k  | capitalize | replace("_", " ") }}</td>
                         <td class="nombre">{{ "%0.3f" | format(v) }} </td>
                     </tr>
                    {% endfor %}
@@ -81,21 +81,21 @@
                {% endfor %}
             </div>
             <div class="column">
-                {% for key, value in ingr.items() %}
+                {% for key, value in sub_recipes.items() %}
                 <table>
                     <tr>
-                        <td colspan="3" class="header">{{ key | capitalize | replace("-", " ") }}</td>
+                        <td colspan="3" class="header">{{ key | capitalize | replace("_", " ") }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2">Poids total</td>
-                        <td class="nombre">{{ "%0.3f" | format(value["poids-total"]) }}</td>
+                        <td colspan="2">Total weight</td>
+                        <td class="nombre">{{ "%0.3f" | format(value["total_weight"]) }}</td>
                     </tr>
-                    {% for k, v in value.recette.items() %}
+                    {% for k, v in value.recipe.items() %}
                     <tr>
                         {% if loop.first %}
-                        <td rowspan="{{ loop.length }}">Recette</td>
+                        <td rowspan="{{ loop.length }}">Recipe</td>
                         {% endif %}
-                        <td>{{ k  | capitalize | replace("-", " ") }}</td>
+                        <td>{{ k  | capitalize | replace("_", " ") }}</td>
                         <td class="nombre">{{ "%0.3f" | format(v) }} </td>
                     </tr>
                    {% endfor %}

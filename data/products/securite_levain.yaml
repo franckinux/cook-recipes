@@ -1,0 +1,4 @@
+recipe: levain_seigle_120pch
+loss_rate: 1
+dough_weight: 0.3
+bread_baked_weight: -1

@@ -3,58 +3,65 @@ import argparse
 from jinja2 import Environment, PackageLoader
 from pathlib import Path
 import sys
+from typing import List
+from typing import Optional
 import yaml
 
-def load_yaml(repertoire, basename):
-    fichier = Path("data", repertoire, basename).with_suffix(".yaml")
+
+def load_yaml(directory: str, basename: str):
+    file_path = Path("data", directory, basename).with_suffix(".yaml")
     try:
-        stream = open(fichier, 'r')
+        stream = open(file_path, 'r')
     except FileNotFoundError:
-        print(f"{fichier} non trouvé")
+        print(f"{file_path} not found")
         sys.exit(1)
     return yaml.safe_load(stream)
 
 
-def follow_recipe(raw_materials, ingredients, ingredient, quantite_ingredient):
-    if ingredient in raw_materials:
-        return raw_materials[ingredient]["prix"] * quantite_ingredient, {}
+def follow_recipe(
+    base_ingredients: dict, sub_recipes: dict, recipe_name: str, recipe_quantity: float
+):
+    if recipe_name in base_ingredients:
+        return base_ingredients[recipe_name]["price"] * recipe_quantity, {}
     else:
-        recette = load_yaml("recettes", ingredient)
-        facteur = sum(recette.values())
-        if ingredient not in ingredients:
-            ingredients[ingredient] = {"recette": {}}
-            if "prix-de-vente-1kg-ttc" in recette:
-                ingredients[ingredient]["quantite"] = 0
-        prix = 0
-        ingredients_recette = {}
-        for sous_ingredient, quantite_sous_ingredient in recette.items():
-            ingredients_dual = sous_ingredient.split('|')
-            if len(ingredients_dual) == 1:
-                nom_ingredient, alias_ingredient = (sous_ingredient,) * 2
+        recipe = load_yaml("recipes", recipe_name)
+        denominator = sum(recipe.values())
+        if recipe_name not in sub_recipes:
+            sub_recipes[recipe_name] = {"recipe": {}}
+            if "selling_price_per_kg_tax_inclusive" in recipe:
+                sub_recipes[recipe_name]["quantity"] = 0
+        recipe_price = 0
+        recipe_ingredients = {}
+        for ingredient, ingredient_quantity in recipe.items():
+            ingredient_names = ingredient.split('|')
+            if len(ingredient_names) == 1:
+                ingredient_name, ingredient_alternate_name = (ingredient,) * 2
             else:
-                nom_ingredient, alias_ingredient = ingredients_dual
-            quantite_ingredient_2 = (quantite_ingredient * quantite_sous_ingredient) / facteur
-            if alias_ingredient in ingredients[ingredient]["recette"]:
-                ingredients[ingredient]["recette"][alias_ingredient] += quantite_ingredient_2
+                ingredient_name, ingredient_alternate_name = ingredient_names
+            quantity = (recipe_quantity * ingredient_quantity) / denominator
+            if ingredient_alternate_name in sub_recipes[recipe_name]["recipe"]:
+                sub_recipes[recipe_name]["recipe"][ingredient_alternate_name] += quantity
             else:
-                ingredients[ingredient]["recette"][alias_ingredient] = quantite_ingredient_2
-            ingredients_recette[alias_ingredient] = quantite_ingredient_2
-            prix2, _ = follow_recipe(raw_materials, ingredients, nom_ingredient, quantite_ingredient_2)
-            prix += prix2
+                sub_recipes[recipe_name]["recipe"][ingredient_alternate_name] = quantity
+            recipe_ingredients[ingredient_alternate_name] = quantity
+            ingredient_price, _ = follow_recipe(base_ingredients, sub_recipes, ingredient_name, quantity)
+            recipe_price += ingredient_price
 
-        ingredients[ingredient]["poids-total"] = sum(ingredients[ingredient]["recette"].values())
-        return prix, ingredients_recette
+        sub_recipes[recipe_name]["total_weight"] = sum(sub_recipes[recipe_name]["recipe"].values())
+        return recipe_price, recipe_ingredients
 
 
-def presente(html, produits, ingredients):
-    print(yaml.dump(produits, default_flow_style=False))
-    print(yaml.dump(ingredients, default_flow_style=False))
+def text_report(products: dict, sub_recipes: dict):
+    print(yaml.dump(products, default_flow_style=False))
+    print(yaml.dump(sub_recipes, default_flow_style=False))
 
-    if html is not None:
-        env = Environment(loader=PackageLoader("calcule", "templates"))
-        template = env.get_template("template.html")
-        with open(html + ".html", "w") as fichier:
-            fichier.write(template.render(ingr=ingredients, prod=produits))
+
+def html_report(products: dict, sub_recipes: dict, html_file: str):
+    env = Environment(loader=PackageLoader("calcule", "templates"))
+    template = env.get_template("template.html")
+    html_path = Path(html_file).with_suffix(".html")
+    with open(html_path, "w") as f:
+        f.write(template.render(sub_recipes=sub_recipes, products=products))
 
 
 def float_representer(dumper, value):
@@ -62,51 +69,57 @@ def float_representer(dumper, value):
     return dumper.represent_scalar(u'tag:yaml.org,2002:float', text)
 
 
-def main(raw_materials, orders, html):
+def main(
+    base_ingredients_file: str, order_files: List[str], html_file: Optional[str]
+):
     yaml.add_representer(float, float_representer)
 
-    ingredients = {}
-    produits = {}
+    sub_recipes = {}
+    products_end = {}
 
-    for order in orders:
-        commandes = load_yaml("commandes", order)
-        matieres = load_yaml("matieres-premieres", raw_materials)
-        general = load_yaml(".", "general")
+    general = load_yaml(".", "general")
+    base_ingredients = load_yaml("ingredients", base_ingredients_file)
+    for order_file in order_files:
+        orders = load_yaml("orders", order_file)
 
-        for produit, quantite in commandes.items():
-            if quantite == 0:
+        for order_product, order_quantity in orders.items():
+            if order_quantity == 0:
                 continue
 
-            infos_produit = load_yaml("produits", produit)
-            produits[produit] = {}
+            product = load_yaml("products", order_product)
+            products_end[order_product] = {}
 
-            poids_paton = infos_produit["poids-paton"]
-            poids = quantite * poids_paton
-            taux_perte = infos_produit.get("taux-perte", 1)
-            prix, recette = follow_recipe(matieres, ingredients, infos_produit["recette"], poids * taux_perte)
+            dough_weight = product["dough_weight"]
+            weight = order_quantity * dough_weight
+            loss_rate = product.get("loss_rate", 1)
+            price, recipe = follow_recipe(
+                base_ingredients, sub_recipes, product["recipe"], weight * loss_rate
+            )
 
-            produits[produit]["recette"] = recette
-            produits[produit]["quantite"] = quantite
-            produits[produit]["poids-paton"] = poids_paton
+            products_end[order_product]["recipe"] = recipe
+            products_end[order_product]["quantity"] = order_quantity
+            products_end[order_product]["dough_weight"] = dough_weight
 
-            if "prix-de-vente-1kg-ttc" in infos_produit:
-                prix_de_vente_piece_ttc = infos_produit["prix-de-vente-1kg-ttc"] * infos_produit["poids-pain-cuit"]
-                produits[produit]["prix-de-vente-piece-ttc"] = prix_de_vente_piece_ttc
+            if "selling_price_per_kg_tax_inclusive" in product:
+                selling_price_per_piece_tax_inclusive = product["selling_price_per_kg_tax_inclusive"] * product["bread_baked_weight"]
+                products_end[order_product]["selling_price_per_piece_tax_inclusive"] = selling_price_per_piece_tax_inclusive
 
-                prix_de_vente_piece_ht = prix_de_vente_piece_ttc / general["tva"]
-                prix_de_revient_piece_ht = prix / quantite
-                produits[produit]["prix-de-revient-piece-ht"] = prix_de_revient_piece_ht
-                taux_marge_brute = (prix_de_vente_piece_ht - prix_de_revient_piece_ht) / prix_de_vente_piece_ht
-                produits[produit]["taux-marge-brute"] = taux_marge_brute * 100
+                selling_price_per_piece_tax_exclusive = selling_price_per_piece_tax_inclusive / general["vat"]
+                cost_price_per_piece_tax_exclusive = price / order_quantity
+                products_end[order_product]["cost_price_per_piece_tax_exclusive"] = cost_price_per_piece_tax_exclusive
+                gross_margin_rate = (selling_price_per_piece_tax_exclusive - cost_price_per_piece_tax_exclusive) / selling_price_per_piece_tax_exclusive
+                products_end[order_product]["gross_margin_rate"] = gross_margin_rate * 100
 
-    presente(html, produits, ingredients)
+    text_report(products_end, sub_recipes)
+    if html_file is not None:
+        html_report(products_end, sub_recipes, html_file)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--commandes", nargs='*', default=["commandes"])
-    parser.add_argument("-m", "--matieres-premieres", default="matieres-premieres")
+    parser.add_argument("-o", "--orders", nargs='*', default=["orders"])
+    parser.add_argument("-i", "--ingredients", default="ingredients")
     parser.add_argument("-t", "--html")
     args = parser.parse_args()
 
-    main(args.matieres_premieres, args.commandes, args.html)
+    main(args.ingredients, args.orders, args.html)

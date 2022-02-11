@@ -1,0 +1,118 @@
+farine_t65:
+     price: 1.29
+     provider: GAEC La Belle Botte
+     conditioning: 25kg
+farine_t80:
+     price: 2.29
+     provider: GAEC La Belle Botte
+     conditioning: 25kg
+farine_t170:
+     price: 1.61
+     provider: GAEC La Belle Botte
+     conditioning: 25kg
+farine_mais:
+     price: 1.70
+     provider:
+     conditioning: 25kg
+son:
+     price: 0.23
+     provider:
+     conditioning: vrac
+remoulage:
+     price: 0.23
+     provider:
+     conditioning: vrac
+eau:
+     price: 0.00001
+     provider: SAUR
+     conditioning: vrac
+sel:
+     price: 0.70
+     provider: Leclerc
+     conditioning: 1kg
+huile_olive:
+     price: 10.50
+     provider: Keramis
+     conditioning: 5l
+avoine_gros:
+     price: 2.98
+     provider: Biocoop
+     conditioning: vrac
+     comment: 3.14 ttc
+noisettes_toastees:
+     price: 15.55
+     provider: Intermarché
+     conditioning: vrac
+     comment: 16.40 ttc
+olives:
+     price: 8.16
+     provider: Keramis
+     conditioning: 12kg
+raisins_secs:
+     price: 5.92
+     provider: Biocoop
+     conditioning: vrac
+     comment: 6.25 ttc
+herbes_provence:
+     price: 16.25
+     provider: Keramis
+     conditioning: 500g
+cardamome_poudre:
+     price: 108.3
+     provider: bienanger.com
+     conditioning: 35g
+tournesol:
+     price: 3.86
+     provider: Intermarché
+     conditioning: vrac
+     comment: 3.85 ttc
+lin_brun:
+     price: 4.23
+     provider: Intermarché
+     conditioning: vrac
+     comment: 4.45 ttc
+lin_dore:
+     price: 6.03
+     provider: Biocoop
+     conditioning: vrac
+     comment: 6.36 ttc
+sesame:
+     price: 5.04
+     provider: Leclerc
+     conditioning: vrac
+     comment: 5.29 ttc
+courge:
+     price: 15.99
+     provider: Biocoop
+     conditioning: vrac
+     comment: 16.87 ttc
+millet:
+     price: 4.03
+     provider: Intermarché
+     conditioning: 25kg
+     comment: 4.25 ttc
+beurre:
+     price: 8
+     provider: Intermarché
+     conditioning: 250g
+     comment: prix au pif
+sucre:
+     price: 8
+     provider: Intermarché
+     conditioning: 1kg
+     comment: prix au pif
+oeuf:
+     price: 8
+     provider: Intermarché
+     conditioning: 1kg
+     comment: prix au pif
+pruneaux_denoyautes:
+     price: 8
+     provider: Intermarché
+     conditioning: 1kg
+     comment: prix au pif
+the:
+     price: 8
+     provider: Intermarché
+     conditioning: 1kg
+     comment: prix au pif

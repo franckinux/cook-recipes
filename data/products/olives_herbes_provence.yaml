@@ -1,0 +1,5 @@
+recipe: olives_herbes_provence
+loss_rate: 1.03
+dough_weight: 0.412
+bread_baked_weight: 0.350
+selling_price_per_kg_tax_inclusive: 15
