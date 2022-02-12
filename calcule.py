@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 import argparse
+from functools import cache
 from jinja2 import Environment, PackageLoader
 from pathlib import Path
 import sys
@@ -8,6 +9,7 @@ from typing import Optional
 import yaml
 
 
+@cache
 def load_yaml(directory: str, basename: str):
     file_path = Path("data", directory, basename).with_suffix(".yaml")
     try:
@@ -28,7 +30,7 @@ def follow_recipe(
         denominator = sum(recipe.values())
         if recipe_name not in sub_recipes:
             sub_recipes[recipe_name] = {"recipe": {}}
-            if "selling_price_per_kg_tax_inclusive" in recipe:
+            if "selling_price_per_kg_incl_taxes" in recipe:
                 sub_recipes[recipe_name]["quantity"] = 0
         recipe_price = 0
         recipe_ingredients = {}
@@ -100,14 +102,14 @@ def main(
             products_end[order_product]["quantity"] = order_quantity
             products_end[order_product]["dough_weight"] = dough_weight
 
-            if "selling_price_per_kg_tax_inclusive" in product:
-                selling_price_per_piece_tax_inclusive = product["selling_price_per_kg_tax_inclusive"] * product["bread_baked_weight"]
-                products_end[order_product]["selling_price_per_piece_tax_inclusive"] = selling_price_per_piece_tax_inclusive
+            if "selling_price_per_kg_incl_taxes" in product:
+                selling_price_per_piece_incl_taxes = product["selling_price_per_kg_incl_taxes"] * product["bread_baked_weight"]
+                products_end[order_product]["selling_price_per_piece_incl_taxes"] = selling_price_per_piece_incl_taxes
 
-                selling_price_per_piece_tax_exclusive = selling_price_per_piece_tax_inclusive / general["vat"]
-                cost_price_per_piece_tax_exclusive = price / order_quantity
-                products_end[order_product]["cost_price_per_piece_tax_exclusive"] = cost_price_per_piece_tax_exclusive
-                gross_margin_rate = (selling_price_per_piece_tax_exclusive - cost_price_per_piece_tax_exclusive) / selling_price_per_piece_tax_exclusive
+                selling_price_per_piece_excl_taxes = selling_price_per_piece_incl_taxes / general["vat"]
+                cost_price_per_piece_excl_taxes = price / order_quantity
+                products_end[order_product]["cost_price_per_piece_excl_taxes"] = cost_price_per_piece_excl_taxes
+                gross_margin_rate = (selling_price_per_piece_excl_taxes - cost_price_per_piece_excl_taxes) / selling_price_per_piece_excl_taxes
                 products_end[order_product]["gross_margin_rate"] = gross_margin_rate * 100
 
     text_report(products_end, sub_recipes)
