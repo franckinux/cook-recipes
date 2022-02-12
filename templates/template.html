@@ -50,16 +50,16 @@
                         <td colspan="2">Quantity</td>
                         <td class="nombre">{{ value.quantity }}</td>
                     </tr>
-                    {% if "cost_price_per_piece_tax_exclusive" in value %}
+                    {% if "cost_price_per_piece_excl_taxes" in value %}
                     <tr>
-                        <td colspan="2">Cost price per piece tax exclusive</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["cost_price_per_piece_tax_exclusive"]) }}</td>
+                        <td colspan="2">Cost price per piece excluding taxes</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["cost_price_per_piece_excl_taxes"]) }}</td>
                     </tr>
                     {% endif %}
-                    {% if "selling_price_per_piece_tax_inclusive" in value %}
+                    {% if "selling_price_per_piece_incl_taxes" in value %}
                     <tr>
-                        <td colspan="2">Selling price per piece tax inclusive</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_tax_inclusive"]) }}</td>
+                        <td colspan="2">Selling price per piece including taxes</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_incl_taxes"]) }}</td>
                     </tr>
                     {% endif %}
                     {% if "gross_margin_rate" in value %}
@@ -81,7 +81,7 @@
                {% endfor %}
             </div>
             <div class="column">
-                {% for key, value in sub_recipes.items() %}
+                {% for key, value in recipes.items() %}
                 <table>
                     <tr>
                         <td colspan="3" class="header">{{ key | capitalize | replace("_", " ") }}</td>

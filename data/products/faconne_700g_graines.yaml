@@ -2,4 +2,4 @@ recipe: campagne_graines_topping
 loss_rate: 1.03
 dough_weight: 0.825
 bread_baked_weight: 0.7
-selling_price_per_kg_tax_inclusive: 6.50
+selling_price_per_kg_incl_taxes: 6.50

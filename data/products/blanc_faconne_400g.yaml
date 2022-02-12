@@ -2,4 +2,4 @@ recipe: blanc_nature
 loss_rate: 1.03
 dough_weight: 0.47
 bread_baked_weight: 0.4
-selling_price_per_kg_tax_inclusive: 4.5
+selling_price_per_kg_incl_taxes: 4.5
