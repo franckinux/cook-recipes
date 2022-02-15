@@ -10,7 +10,7 @@ import yaml
 
 
 @cache
-def load_yaml(directory: str, basename: str):
+def load_yaml(directory: str, basename: str) -> dict:
     file_path = Path("data", directory, basename).with_suffix(".yaml")
     try:
         stream = open(file_path, 'r')
@@ -22,7 +22,7 @@ def load_yaml(directory: str, basename: str):
 
 def follow_recipe(
     base_ingredients: dict, recipes: dict, recipe_name: str, recipe_quantity: float
-):
+) -> (float, dict):
     if recipe_name in base_ingredients:
         return base_ingredients[recipe_name]["price"] * recipe_quantity, {}
     else:
