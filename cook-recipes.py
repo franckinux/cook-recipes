@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 import argparse
 from functools import cache
-from jinja2 import Environment, PackageLoader
 from pathlib import Path
 import sys
 from typing import List
 from typing import Optional
+
+from babel.support import Translations
+from jinja2 import Environment, PackageLoader
 import yaml
 
 
@@ -58,8 +60,13 @@ def text_report(products: dict, recipes: dict):
     print(yaml.dump(recipes, default_flow_style=False))
 
 
-def html_report(products: dict, recipes: dict, html_file: str):
-    env = Environment(loader=PackageLoader("cook-recipes", "templates"))
+def html_report(products: dict, recipes: dict, html_file: str, locale: str):
+    env = Environment(
+        extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape", "jinja2.ext.with_"],
+        loader=PackageLoader("cook-recipes", "templates")
+    )
+    translations = Translations.load("locales/translations", [locale])
+    env.install_gettext_translations(translations)
     template = env.get_template("template.html")
     html_path = Path(html_file).with_suffix(".html")
     with open(html_path, "w") as f:
@@ -72,7 +79,8 @@ def float_representer(dumper, value):
 
 
 def main(
-    base_ingredients_file: str, order_files: List[str], html_file: Optional[str]
+    base_ingredients_file: str, order_files: List[str], html_file: Optional[str],
+    locale: str
 ):
     yaml.add_representer(float, float_representer)
 
@@ -114,7 +122,7 @@ def main(
 
     text_report(products, recipes)
     if html_file is not None:
-        html_report(products, recipes, html_file)
+        html_report(products, recipes, html_file, locale)
 
 
 if __name__ == "__main__":
@@ -122,6 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--orders", nargs='*', default=["orders"])
     parser.add_argument("-i", "--ingredients", default="ingredients")
     parser.add_argument("-t", "--html")
+    parser.add_argument("-l", "--locale", default="en")
     args = parser.parse_args()
 
-    main(args.ingredients, args.orders, args.html)
+    main(args.ingredients, args.orders, args.html, args.locale)

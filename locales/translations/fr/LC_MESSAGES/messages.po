@@ -1,0 +1,48 @@
+# French translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-02-15 22:19+0100\n"
+"PO-Revision-Date: 2022-02-15 22:11+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: templates/template.html:46
+msgid "Dough weight"
+msgstr "Poids du pâton"
+
+#: templates/template.html:50
+msgid "Quantity"
+msgstr "Quantité"
+
+#: templates/template.html:55
+msgid "Cost price per piece excluding taxes"
+msgstr "Prix de revient pièce HT"
+
+#: templates/template.html:61
+msgid "Selling price per piece including taxes"
+msgstr "Prix de vente pièce TTC"
+
+#: templates/template.html:67
+msgid "Gross margin rate"
+msgstr "Marge brute"
+
+#: templates/template.html:74 templates/template.html:96
+msgid "Recipe"
+msgstr "Recette"
+
+#: templates/template.html:90
+msgid "Total weight"
+msgstr "Poids total"
+

@@ -101,3 +101,23 @@ Exemple de sortie du programme : ::
             farine-t80: 12.507
             levain-seigle-120pch: 2.501
             sel: 0.250
+
+Internationalization
+====================
+
+Creation: ::
+
+.. code-block:: console
+
+    pybabel extract -F babel-mapping.ini -k _ --no-wrap -o locales/messages.pot .
+    pybabel init -i messages.pot -d translations -l en
+    pybabel init -i messages.pot -d translations -l fr
+    pybabel compile -d translations
+
+Update: ::
+
+.. code-block:: console
+
+    pybabel extract -F babel-mapping.ini -k _ --no-wrap -o locales/messages.pot .
+    pybabel update -i messages.pot --no-wrap -d translations
+    pybabel compile -d translations
