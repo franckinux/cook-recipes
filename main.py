@@ -7,7 +7,7 @@ from typing import List
 from typing import Optional
 
 from babel.support import Translations
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 import yaml
 
 
@@ -24,7 +24,7 @@ def load_yaml(directory: str, basename: str) -> dict:
 
 def follow_recipe(
     base_ingredients: dict, recipes: dict, recipe_name: str, recipe_quantity: float
-) -> (float, dict):
+) -> tuple[float, dict]:
     if recipe_name in base_ingredients:
         return base_ingredients[recipe_name]["price"] * recipe_quantity, {}
     else:
@@ -34,7 +34,7 @@ def follow_recipe(
             recipes[recipe_name] = {"recipe": {}}
             if "selling_price_per_kg_incl_taxes" in recipe:
                 recipes[recipe_name]["quantity"] = 0
-        recipe_price = 0
+        recipe_price = 0.0
         recipe_ingredients = {}
         for ingredient, ingredient_quantity in recipe.items():
             ingredient_names = ingredient.split('|')
@@ -62,8 +62,9 @@ def text_report(products: dict, recipes: dict):
 
 def html_report(products: dict, recipes: dict, html_file: str, locale: str):
     env = Environment(
-        extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape", "jinja2.ext.with_"],
-        loader=PackageLoader("cook-recipes", "templates")
+        extensions=["jinja2.ext.i18n"],
+        loader=FileSystemLoader("./templates"),
+        autoescape=select_autoescape()
     )
     translations = Translations.load("locales/translations", [locale])
     env.install_gettext_translations(translations)
