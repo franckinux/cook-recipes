@@ -7,42 +7,50 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-02-15 22:19+0100\n"
+"POT-Creation-Date: 2024-02-05 17:09+0100\n"
 "PO-Revision-Date: 2022-02-15 22:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.14.0\n"
 
-#: templates/template.html:46
+#: templates/template.html:40
+msgid "Products"
+msgstr "Produits"
+
+#: templates/template.html:47
 msgid "Dough weight"
 msgstr "Poids du pâton"
 
-#: templates/template.html:50
+#: templates/template.html:51
 msgid "Quantity"
 msgstr "Quantité"
 
-#: templates/template.html:55
+#: templates/template.html:56
 msgid "Cost price per piece excluding taxes"
 msgstr "Prix de revient pièce HT"
 
-#: templates/template.html:61
+#: templates/template.html:62
 msgid "Selling price per piece including taxes"
 msgstr "Prix de vente pièce TTC"
 
-#: templates/template.html:67
+#: templates/template.html:68
 msgid "Gross margin rate"
 msgstr "Marge brute"
 
-#: templates/template.html:74 templates/template.html:96
+#: templates/template.html:75 templates/template.html:98
 msgid "Recipe"
 msgstr "Recette"
 
-#: templates/template.html:90
+#: templates/template.html:85
+msgid "Recipes"
+msgstr "Recettes"
+
+#: templates/template.html:92
 msgid "Total weight"
 msgstr "Poids total"
 

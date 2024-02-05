@@ -37,6 +37,7 @@
     <body>
         <div class="row">
             <div class="column">
+                <h1>{{ _("Products") }}</h1>
                 {% for key, value in products.items() %}
                 <table>
                     <tr>
@@ -81,6 +82,7 @@
                {% endfor %}
             </div>
             <div class="column">
+                <h1>{{ _("Recipes") }}</h1>
                 {% for key, value in recipes.items() %}
                 <table>
                     <tr>

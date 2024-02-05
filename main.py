@@ -1,8 +1,11 @@
 #! /usr/bin/env python3
+
 import argparse
 from functools import cache
 from pathlib import Path
 import sys
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -12,14 +15,14 @@ import yaml
 
 
 @cache
-def load_yaml(directory: str, basename: str) -> dict:
+def load_yaml(directory: str, basename: str) -> Any:
     file_path = Path("data", directory, basename).with_suffix(".yaml")
     try:
-        stream = open(file_path, 'r')
+        with open(file_path, 'r') as stream:
+            return yaml.safe_load(stream)
     except FileNotFoundError:
-        print(f"{file_path} not found")
+        print(f"{file_path} not found", file=sys.stderr)
         sys.exit(1)
-    return yaml.safe_load(stream)
 
 
 def follow_recipe(
@@ -37,11 +40,10 @@ def follow_recipe(
         recipe_price = 0.0
         recipe_ingredients = {}
         for ingredient, ingredient_quantity in recipe.items():
-            ingredient_names = ingredient.split('|')
-            if len(ingredient_names) == 1:
+            try:
+                ingredient_name, ingredient_alternate_name = ingredient.split('|')
+            except ValueError:
                 ingredient_name, ingredient_alternate_name = (ingredient,) * 2
-            else:
-                ingredient_name, ingredient_alternate_name = ingredient_names
             quantity = (recipe_quantity * ingredient_quantity) / denominator
             if ingredient_alternate_name in recipes[recipe_name]["recipe"]:
                 recipes[recipe_name]["recipe"][ingredient_alternate_name] += quantity
@@ -85,8 +87,8 @@ def main(
 ):
     yaml.add_representer(float, float_representer)
 
-    recipes = {}
-    products = {}
+    recipes: Dict = {}
+    products: Dict = {}
 
     general = load_yaml(".", "general")
     base_ingredients = load_yaml("ingredients", base_ingredients_file)
