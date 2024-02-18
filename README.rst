@@ -1,111 +1,66 @@
-Calcule les quantités d'ingrédients à partir de commandes de produits et de
-recettes.
+This program calculates ingredient quantities from orders and recipes.
 
-Le répertoire *produits* décrit les produits.
+The `data` directory contains the input data:
 
-Le répertoire *recettes* décrit les recettes des produits.
+- `colors.yaml`: a list of color for each recipe. It sets the background color
+  of the recipe's header,  recipe name or ingredient;
+- `general.yaml`: general data;
+- `ingredients/ingredients.yaml`: list of ingredients. For each ingredient the
+  following field have to be provided: price, provider and conditioning;
+- `recipes/*.yaml`: one file per recipe. Each file contains a list of recipe(s)
+  and/or ingredient(s);
+- `products/*.yaml`: one file per product
+    - `recipe`: name of the recipe. Must haxive a corresponding file in the
+      `recipes` directory;
+    - `loss_rate`: used to increase the produced quantity (example: 1.03);
+    - `dough_weight`: weight of the dough;
+    - `bread_baked_weight`:  weight of the baked product;
+    - `selling_price_per_kg_incl_taxes` (optional);
+- `orders/*.yaml`: each file contains a list if orders. Each line is a product
+  name and the corresponding number of items;
 
-Le répertoire *matieres-premieres* décrit les matières premières des recettes.Le fichier de
-matières premieres par défaut se nomme matieres-premieres.yaml.
+Usage
+=====
 
+::
 
-Le répertoire *commandes* décrit les commandes de produits. Le fichier de
-commandes par défaut se nomme commandes.yaml.
+    usage: main.py [-h] [-o [ORDERS ...]] [-i INGREDIENTS] [-m HTML] [-l LOCALE] [-t TITLE]
 
-Lancement du programme : ::
+    options:
+      -h, --help            show this help message and exit
+      -o [ORDERS ...], --orders [ORDERS ...]
+      -i INGREDIENTS, --ingredients INGREDIENTS
+      -m HTML, --html HTML
+      -l LOCALE, --locale LOCALE
+      -t TITLE, --title TITLE
 
-    python3 calcule.py
+Several order files can be specified in which case the product quantities are
+added for the same products.
 
-On peut lancer le programme sur plusieurs commandes : ::
+The defaults are :
 
-    python3 calcule.py -c commandes-sures commandes-en-attente
+  - for the ingredients file: `ingredients.yaml`;
+  - for the order file: `orders.yaml`;
+  - for the locale: `en`. The possible values are 'en' or 'fr';
 
-On peut générer un fichier html. Voir le fichier plan.html.
+The file `plan.html` is an example of html output file. It is produced from the
+order `orders/orders.yaml`. It has been generated with the following command:
 
-    python3 calcule.py -t plan.html
+.. code-block:: console
 
-En plus des quantités, le programme calcule le prix de revient et la marge
-brute.
+    python3 main.py -m plan -t "Example production"
 
-Exemple de sortie du programme : ::
+Optionally, you can convert the html file to a pdf one (requires to install the
+package `wkhtmltopdf`):
 
-        banneton-1kg-nature:
-          poids-paton: 1.180
-          prix-de-revient-piece-ht: 1.512
-          prix-de-vente-piece-ttc: 4.500
-          quantite: 2
-          recette:
-            pate-base-campagne: 2.431
-          taux-marge-brute: 64.557
-        banneton-500g-nature:
-          poids-paton: 0.588
-          prix-de-revient-piece-ht: 0.753
-          prix-de-vente-piece-ttc: 2.250
-          quantite: 19
-          recette:
-            pate-base-campagne: 11.507
-          taux-marge-brute: 64.678
-        faconne-700g-graines:
-          poids-paton: 0.825
-          prix-de-revient-piece-ht: 1.314
-          prix-de-vente-piece-ttc: 4.550
-          quantite: 17
-          recette:
-            eau-hydratation-graines: 1.605
-            melange-graines-1: 1.605
-            melange-graines-2: 0.535
-            pate-base-campagne: 10.701
-          taux-marge-brute: 69.540
-        securite-levain:
-          poids-paton: 0.300
-          quantite: 1
-          recette:
-            eau: 0.164
-            farine-t170: 0.136
+.. code-block:: console
 
-        campagne-graines-topping:
-          poids-total: 14.446
-          recette:
-            eau-hydratation-graines: 1.605
-            melange-graines-1: 1.605
-            melange-graines-2: 0.535
-            pate-base-campagne: 10.701
-        campagne-nature:
-          poids-total: 13.938
-          recette:
-            pate-base-campagne: 13.938
-        levain-seigle-120pch:
-          poids-total: 2.801
-          recette:
-            eau: 1.528
-            farine-t170: 1.273
-        melange-graines-1:
-          poids-total: 1.605
-          recette:
-            lin-brun: 0.214
-            lin-dore: 0.214
-            sesame: 0.107
-            tournesol: 1.070
-        melange-graines-2:
-          poids-total: 0.535
-          recette:
-            avoine-gros: 0.141
-            lin-brun: 0.056
-            lin-dore: 0.056
-            tournesol: 0.282
-        pate-base-campagne:
-          poids-total: 24.639
-          recette:
-            eau-de-bassinage: 0.875
-            eau-de-frasage: 8.505
-            farine-t80: 12.507
-            levain-seigle-120pch: 2.501
-            sel: 0.250
+   wkhtmltopdf plan.html plan.pdf
 
 Internationalization
 ====================
 
-Creation: ::
+Creation:
 
 .. code-block:: console
 
@@ -114,7 +69,7 @@ Creation: ::
     pybabel init -i messages.pot -d translations -l fr
     pybabel compile -d translations
 
-Update: ::
+Update:
 
 .. code-block:: console
 

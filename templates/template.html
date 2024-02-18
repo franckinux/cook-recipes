@@ -17,6 +17,9 @@
                 border: 1px solid black;
                 padding: 3px;
             }
+            .title {
+                text-align: center;
+            }
             .header {
                 background-color: lightgrey;
                 text-align: center;
@@ -35,9 +38,12 @@
         </style>
     </head>
     <body>
+        {% if title %}
+        <h1 class="title">{{ title}}</h1>
+        {% endif %}
         <div class="row">
             <div class="column">
-                <h1>{{ _("Price of products") }}</h1>
+                <h2>{{ _("Price of products") }}</h2>
                 {% for key, value in products.items() %}
                     {% if "selling_price_per_piece_incl_taxes" in value %}
                 <table>
@@ -61,7 +67,7 @@
                {% endfor %}
             </div>
             <div class="column">
-                <h1>{{ _("Production of products") }}</h1>
+                <h2>{{ _("Production of products") }}</h2>
                 {% for key, value in products.items() %}
                 <table>
                     <tr>
@@ -80,7 +86,7 @@
                         {% if loop.first %}
                         <td rowspan="{{ loop.length }}">{{ _("Recipe") }}</td>
                         {% endif %}
-                        <td>{{ k  | capitalize | replace("_", " ") }}</td>
+                        <td{% if k in colors %} style="background-color: {{colors[k]}}"{% endif %}>{{ k | capitalize | replace("_", " ") }}</td>
                         <td class="nombre">{{ "%0.3f" | format(v) }} </td>
                     </tr>
                    {% endfor %}
@@ -88,18 +94,18 @@
                {% endfor %}
             </div>
             <div class="column">
-                <h1>{{ _("Recipes") }}</h1>
+                <h2>{{ _("Recipes") }}</h2>
                 {% for key, value in recipes.items() %}
                 <table>
                     <tr>
-                        <td colspan="3" class="header">{{ key | capitalize | replace("_", " ") }}</td>
+                        <td colspan="3" class="header"{% if key in colors %} style="background-color: {{colors[key]}}"{% endif %}>{{ key | capitalize | replace("_", " ") }}</td>
                     </tr>
                     {% for k, v in value.recipe.items() %}
                     <tr>
                         {% if loop.first %}
                         <td rowspan="{{ loop.length }}">{{ _("Recipe") }}</td>
                         {% endif %}
-                        <td>{{ k  | capitalize | replace("_", " ") }}</td>
+                        <td{% if k in colors %} style="background-color: {{colors[k]}}"{% endif %}>{{ k | capitalize | replace("_", " ") }}</td>
                         <td class="nombre">{{ "%0.3f" | format(v) }} </td>
                     </tr>
                    {% endfor %}

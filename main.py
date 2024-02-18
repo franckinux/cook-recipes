@@ -62,7 +62,10 @@ def text_report(products: dict, recipes: dict):
     print(yaml.dump(recipes, default_flow_style=False))
 
 
-def html_report(products: dict, recipes: dict, html_file: str, locale: str):
+def html_report(
+    products: dict, recipes: dict, colors: dict, html_file: str, locale: str,
+    title: str
+):
     env = Environment(
         extensions=["jinja2.ext.i18n"],
         loader=FileSystemLoader("./templates"),
@@ -73,7 +76,9 @@ def html_report(products: dict, recipes: dict, html_file: str, locale: str):
     template = env.get_template("template.html")
     html_path = Path(html_file).with_suffix(".html")
     with open(html_path, "w") as f:
-        f.write(template.render(recipes=recipes, products=products))
+        f.write(template.render(
+            recipes=recipes, products=products, colors=colors, title=title
+        ))
 
 
 def float_representer(dumper, value):
@@ -83,7 +88,7 @@ def float_representer(dumper, value):
 
 def main(
     base_ingredients_file: str, order_files: List[str], html_file: Optional[str],
-    locale: str
+    locale: str, title: str
 ):
     yaml.add_representer(float, float_representer)
 
@@ -91,6 +96,7 @@ def main(
     products: Dict = {}
 
     general = load_yaml(".", "general")
+    colors = load_yaml(".", "colors")
     base_ingredients = load_yaml("ingredients", base_ingredients_file)
     for order_file in order_files:
         orders = load_yaml("orders", order_file)
@@ -125,15 +131,16 @@ def main(
 
     text_report(products, recipes)
     if html_file is not None:
-        html_report(products, recipes, html_file, locale)
+        html_report(products, recipes, colors, html_file, locale, title)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--orders", nargs='*', default=["orders"])
     parser.add_argument("-i", "--ingredients", default="ingredients")
-    parser.add_argument("-t", "--html")
+    parser.add_argument("-m", "--html")
     parser.add_argument("-l", "--locale", default="en")
+    parser.add_argument("-t", "--title")
     args = parser.parse_args()
 
-    main(args.ingredients, args.orders, args.html, args.locale)
+    main(args.ingredients, args.orders, args.html, args.locale, args.title)
