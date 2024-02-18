@@ -103,13 +103,13 @@ def main(
             products[order_product] = {}
 
             dough_weight = product["dough_weight"]
-            weight = order_quantity * dough_weight
             loss_rate = product.get("loss_rate", 1)
+            weight = order_quantity * dough_weight * loss_rate
             price, recipe = follow_recipe(
-                base_ingredients, recipes, product["recipe"], weight * loss_rate
+                base_ingredients, recipes, product["recipe"], weight
             )
 
-            products[order_product]["recipe"] = recipe
+            products[order_product]["recipe"] = {product["recipe"]: weight}
             products[order_product]["quantity"] = order_quantity
             products[order_product]["dough_weight"] = dough_weight
 
