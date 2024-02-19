@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import argparse
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 import sys
@@ -9,6 +10,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from babel.dates import format_datetime
 from babel.support import Translations
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import yaml
@@ -146,4 +148,6 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--title")
     args = parser.parse_args()
 
-    main(args.ingredients, args.orders, args.html, args.locale, args.title)
+    title = args.title if args.title is not None else format_datetime(datetime.now(), locale=args.locale)
+
+    main(args.ingredients, args.orders, args.html, args.locale, title)

@@ -35,7 +35,7 @@ Usage
       -t TITLE, --title TITLE
 
 Several order files can be specified in which case the product quantities are
-added for the same products.
+cumulated for the same products.
 
 The defaults are :
 
