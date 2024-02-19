@@ -45,18 +45,22 @@
             <div class="column">
                 <h2>{{ _("Price of products") }}</h2>
                 {% for key, value in products.items() %}
-                    {% if "selling_price_per_piece_incl_taxes" in value %}
+                    {% if "selling_price_per_kg_incl_taxes" in value %}
                 <table>
                     <tr>
                         <td colspan="3" class="header">{{ key | capitalize | replace("_", " ") }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ _("Selling price per kg including taxes") }}</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_incl_taxes"]) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">{{ _("Cost price per piece excluding taxes") }}</td>
                         <td class="nombre">{{ "%0.2f" | format(value["cost_price_per_piece_excl_taxes"]) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2">{{ _("Selling price per piece including taxes") }}</td>
-                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_incl_taxes"]) }}</td>
+                        <td colspan="2">{{ _("Selling price per piece excluding taxes") }}</td>
+                        <td class="nombre">{{ "%0.2f" | format(value["selling_price_per_piece_excl_taxes"]) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">{{ _("Gross margin rate") }}</td>

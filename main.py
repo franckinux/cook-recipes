@@ -120,10 +120,13 @@ def main(
             products[order_product]["dough_weight"] = dough_weight
 
             if "selling_price_per_kg_incl_taxes" in product:
-                selling_price_per_piece_incl_taxes = product["selling_price_per_kg_incl_taxes"] * product["bread_baked_weight"]
+                selling_price_per_kg_incl_taxes = product["selling_price_per_kg_incl_taxes"]
+                products[order_product]["selling_price_per_kg_incl_taxes"] = selling_price_per_kg_incl_taxes
+                selling_price_per_piece_incl_taxes = selling_price_per_kg_incl_taxes * product["bread_baked_weight"]
                 products[order_product]["selling_price_per_piece_incl_taxes"] = selling_price_per_piece_incl_taxes
 
                 selling_price_per_piece_excl_taxes = selling_price_per_piece_incl_taxes / general["vat"]
+                products[order_product]["selling_price_per_piece_excl_taxes"] = selling_price_per_piece_excl_taxes
                 cost_price_per_piece_excl_taxes = price / order_quantity
                 products[order_product]["cost_price_per_piece_excl_taxes"] = cost_price_per_piece_excl_taxes
                 gross_margin_rate = (selling_price_per_piece_excl_taxes - cost_price_per_piece_excl_taxes) / selling_price_per_piece_excl_taxes
