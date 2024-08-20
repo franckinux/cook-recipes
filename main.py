@@ -15,6 +15,9 @@ from babel.support import Translations
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import yaml
 
+base_ingredients = {}
+recipes = {}
+
 
 @cache
 def load_yaml(directory: str, basename: str) -> Any:
@@ -27,11 +30,11 @@ def load_yaml(directory: str, basename: str) -> Any:
         sys.exit(1)
 
 
-def follow_recipe(
-    base_ingredients: dict, recipes: dict, recipe_name: str, recipe_quantity: float
-) -> tuple[float, dict]:
+def follow_recipe(recipe_name: str, recipe_quantity: float) -> float:
+    global recipes
+
     if recipe_name in base_ingredients:
-        return base_ingredients[recipe_name]["price"] * recipe_quantity, {}
+        return base_ingredients[recipe_name]["price"] * recipe_quantity
     else:
         recipe = load_yaml("recipes", recipe_name)
         denominator = sum(recipe.values())
@@ -40,7 +43,6 @@ def follow_recipe(
             if "selling_price_per_kg_incl_taxes" in recipe:
                 recipes[recipe_name]["quantity"] = 0
         recipe_price = 0.0
-        recipe_ingredients = {}
         for ingredient, ingredient_quantity in recipe.items():
             try:
                 ingredient_name, ingredient_alternate_name = ingredient.split('|')
@@ -51,12 +53,10 @@ def follow_recipe(
                 recipes[recipe_name]["recipe"][ingredient_alternate_name] += quantity
             else:
                 recipes[recipe_name]["recipe"][ingredient_alternate_name] = quantity
-            recipe_ingredients[ingredient_alternate_name] = quantity
-            ingredient_price, _ = follow_recipe(base_ingredients, recipes, ingredient_name, quantity)
-            recipe_price += ingredient_price
+            recipe_price += follow_recipe(ingredient_name, quantity)
 
         recipes[recipe_name]["total_weight"] = sum(recipes[recipe_name]["recipe"].values())
-        return recipe_price, recipe_ingredients
+        return recipe_price
 
 
 def text_report(products: dict, recipes: dict):
@@ -92,9 +92,10 @@ def main(
     base_ingredients_file: str, order_files: List[str], html_file: Optional[str],
     locale: str, title: str
 ):
+    global base_ingredients
+
     yaml.add_representer(float, float_representer)
 
-    recipes: Dict = {}
     products: Dict = {}
 
     general = load_yaml(".", "general")
@@ -113,9 +114,7 @@ def main(
             dough_weight = product["dough_weight"]
             loss_rate = product.get("loss_rate", 1)
             weight = order_quantity * dough_weight * loss_rate
-            price, recipe = follow_recipe(
-                base_ingredients, recipes, product["recipe"], weight
-            )
+            price = follow_recipe(product["recipe"], weight)
 
             products[order_product]["recipe"] = {product["recipe"]: weight}
             products[order_product]["quantity"] = order_quantity
@@ -131,7 +130,8 @@ def main(
                 products[order_product]["selling_price_per_piece_excl_taxes"] = selling_price_per_piece_excl_taxes
                 cost_price_per_piece_excl_taxes = price / order_quantity
                 products[order_product]["cost_price_per_piece_excl_taxes"] = cost_price_per_piece_excl_taxes
-                gross_margin_rate = (selling_price_per_piece_excl_taxes - cost_price_per_piece_excl_taxes) / selling_price_per_piece_excl_taxes
+                gross_margin_rate = (selling_price_per_piece_excl_taxes - cost_price_per_piece_excl_taxes) \
+                    / selling_price_per_piece_excl_taxes
                 products[order_product]["gross_margin_rate"] = gross_margin_rate * 100
 
     text_report(products, recipes)
